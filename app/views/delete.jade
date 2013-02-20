@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  header
+    a(href='/') create new
+
+    p
+      | are you sure to delete paste
+      code #{paste.id}
+      | ?
+
+  form(method='POST', action='/delete')
+    input(type='hidden', name='id', value='#{paste.id}')
+    input(type='hidden', name='secret', value='#{paste.secret}')
+    input(type='submit', name='delete', value='delete')
+

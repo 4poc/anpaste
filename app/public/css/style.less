@@ -1,0 +1,162 @@
+
+@bcolor: #e7e7e7;
+
+.rounded-corners (@radius: 3px) {
+  border-radius: @radius;
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+}
+
+.border {
+  border: 1px solid @bcolor;
+  .rounded-corners(3px);
+}
+
+.hidden {
+  display: none;
+}
+
+#encrypted-data {
+  .hidden;
+}
+
+body {
+  margin: 20px;
+}
+
+h1 {
+  border-bottom: 1px solid @bcolor;
+  font-family: monaco, monospace;
+  font-size: 18px;
+  color: #444;
+}
+
+code {
+  font-size: 12px;
+  .rounded-corners(3px);
+}
+
+strong {
+  color: #333;
+}
+
+body {
+  font-family: arial, sans-serif;
+}
+label, p {
+  letter-spacing: 1px;
+  font-size: 11px;
+}
+header, footer {
+  font-size: 12px;
+}
+
+form {
+  position: absolute;
+  label {
+    display: block;
+    margin-top: 4px;
+  }
+  input[type="text"] {
+    width: 640px;
+    font-family: monaco, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 3px;
+    .border;
+  }
+  textarea {
+    width: 640px;
+    font-family: monaco;
+    font-size: 13px;
+    padding: 3px;
+    height: 350px;
+    .border;
+  }
+  select {
+    width: 120px;
+  }
+
+  .options {
+    display: block;
+    width: 650px;
+
+    div {
+    }
+
+    .left {
+      padding-right: 15px;
+      display: inline;
+      float: left;
+      label[for="encrypted"] {
+        display: inline !important;
+      }
+    }
+
+    .submit {
+      display: block;
+      text-align: right;
+      float: right;
+    }
+  }
+
+}
+
+a {
+  color: #455EA9;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+header {
+  border-bottom: 1px solid @bcolor;
+  width: 648px;
+  margin-bottom: 12px;
+  
+  .urls {
+    line-height: 12px;
+    a {
+      font-family: monospace;
+      font-size: 11px;
+    }
+  }
+
+  .time {
+    margin-top:15px;
+    font-style: italic;
+    letter-spacing: 1px;
+    font-size: 11px;
+  }
+
+
+}
+
+footer {
+  border-top: 1px solid @bcolor;
+  width: 648px;
+  margin-top: 12px;
+  
+  .time {
+    font-style: italic;
+    letter-spacing: 1px;
+    font-size: 11px;
+  }
+
+
+}
+
+.notice {
+  color: #B94A48;
+  background-color: #F2DEDE;
+  border: 1px solid #EED3D7;
+  .rounded-corners(3px);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  margin: 0px 0px 12px 0px;
+  padding: 8px;
+  display: inline-block;
+
+}
+

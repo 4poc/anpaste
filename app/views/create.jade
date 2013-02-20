@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  // create form with settings
+  form(method='POST', action='/create')
+    label(for='summary') summary
+    input(type='text', name='summary', value='')
+
+    label(for='content') content
+    textarea(name='content', autofocus=true)
+
+    .options
+
+      div.left
+
+        label(for='type') expiration
+        select(name='expiration')
+          option(value='0') never
+          option(value='#{30}') 30 seconds
+          option(value='#{5 * 60}') 5 minutes
+          option(value='#{20 * 60}') 20 minutes
+          option(value='#{3 * 60 * 60}') 3 hours
+          option(value='#{6 * 60 * 60}') 6 hours
+          option(value='#{12 * 60 * 60}') 12 hours
+          option(value='#{24 * 60 * 60}') 24 hours
+          option(value='#{7 * 24 * 60 * 60}') 7 days
+          option(value='#{31 * 24 * 60 * 60}') 1 month
+
+        #encrypted.hidden
+
+          input(type='checkbox', name='encrypted', checked=true, value='true')
+          label(for='encrypted') client-side encryption
+
+      div.submit
+
+        input(type='submit', name='create', value='create')
+
+

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  if paste.summary
+    h1 #{paste.summary}
+
+  if paste.encrypted
+    #encrypted-data #{paste.content}
+
+  pre
+    if !paste.encrypted
+      code#content !{paste.content}
+    else
+      code#content
+
+  footer
+
+    mixin time(paste)
+
+    a(href='/') create new
+

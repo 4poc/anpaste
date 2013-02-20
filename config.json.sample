@@ -1,0 +1,13 @@
+{
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "username": "paste",
+    "password": "<CHANGEME>",
+    "database": "paste"
+  },
+  "server": {
+    "bind": "0.0.0.0",
+    "port": 31232
+  }
+}

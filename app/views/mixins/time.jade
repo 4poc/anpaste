@@ -1,0 +1,11 @@
+
+mixin time(paste)
+  .time
+    span
+      | created&nbsp;
+      span.easydate #{paste.created}
+    if paste.expire
+      span 
+        | expires:&nbsp;
+        span.easydate#expire(data-expire=paste.expire.toString()) #{paste.expire}
+

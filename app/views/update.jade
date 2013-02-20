@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  mixin link(url)
+    a(href=url) #{url}
+
+  header
+    a(href='/') create new
+
+    .urls
+      .show
+        strong Link:&nbsp;
+        mixin link(url([paste.id]))
+      .update
+        strong Update:&nbsp;
+        mixin link(url(['update', paste.id, paste.secret]))
+      .delete
+        strong Delete:&nbsp;
+        mixin link(url(['delete', paste.id, paste.secret]))
+
+    mixin time(paste)
+
+  form(method='POST', action='/update')
+    input(type='hidden', name='id', value='#{paste.id}')
+    input(type='hidden', name='secret', value='#{paste.secret}')
+    input(type='hidden', name='encrypted', value='#{paste.encrypted ? 'true' : 'false'}')
+
+
+    label(for='summary') summary
+    input(type='text', name='summary', value='#{paste.summary}')
+
+    if paste.encrypted
+      #encrypted-data #{paste.content}
+
+    label(for='content') content
+    textarea(name='content', autofocus=true) #{paste.encrypted ? '' : paste.content}
+
+    .options
+
+      div.submit
+
+        input(type='submit', name='update', value='update')
+
+
