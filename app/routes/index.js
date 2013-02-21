@@ -1,19 +1,28 @@
 var sprintf = require('sprintf').sprintf;
-var hl = require("highlight").Highlight;
 
 var store = require('../lib/store.js');
+
+
+exports.index = function (req, res, next) {
+  res.redirect('/create');
+};
+
 
 exports.readPaste = function (req, res, next) {
   var id = req.params.id, format = req.params.format || 'html';
   store.get(id, function (err, paste) {
     if (err) return next();
 
-    // server-side syntax hilighting:
-    if (!paste.encrypted) paste.content = hl(paste.content);
-
-    res.render('show', {paste: paste});
+    if (format == 'html') {
+      res.render('show', {paste: paste});
+    }
+    else if (format == 'raw') {
+      res.set('Content-Type', 'text/plain; charset=utf-8; charset=utf-8');
+      res.send(paste.content);
+    }
   });
 };
+
 
 exports.createPasteForm = function (req, res) {
   var notice;
@@ -24,6 +33,7 @@ exports.createPasteForm = function (req, res) {
 
   res.render('create', {notice: notice});
 };
+
 
 exports.createPaste = function (req, res, next) {
   if (req.body.content.length == 0) throw new Error('content required');

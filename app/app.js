@@ -56,20 +56,27 @@ app.configure(function () {
 // sets a timer to delete expired pastes every 5 minutes
 setInterval(function () {
   console.log('delete expired');
-  self.store.deleteExpired(function (err) {
+  store.deleteExpired(function (err) {
     if (err != null) console.error(err);
   });
 }, 5 * 60 * 1000);
 
 
 // setup routes
-app.get ('/'                   , routes.createPasteForm);
+app.get ('/'                   , routes.index);
+app.get ('/create'             , routes.createPasteForm);
 app.post('/create'             , routes.createPaste);
 app.get ('/:id.:format?'       , routes.readPaste);
 app.get ('/update/:id/:secret' , routes.updatePasteForm);
 app.post('/update'             , routes.updatePaste);
 app.get ('/delete/:id/:secret' , routes.deletePasteForm);
 app.post('/delete'             , routes.deletePaste);
+
+
+// Error messages all redirect to create
+app.use(function (err, req, res, next) {
+  res.render('create', {notice: err});
+});
 
 
 // start the express server

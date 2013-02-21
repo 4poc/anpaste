@@ -22,7 +22,7 @@ var token = {
     var string = '';
     for (var i = 0; i < length; i++) {
       string += this.CHARS[Math.floor(Math.random() 
-        * this.token.CHARS.length)];
+        * this.CHARS.length)];
     }
     return string;
   }
