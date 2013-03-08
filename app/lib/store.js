@@ -17,8 +17,8 @@ var url = sprintf('postgres://%s:%s@%s:%d/%s',
 );
 
 var token = {
-  CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_~',
-  gen: function (length) {
+  CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+  gen: function (length, fixed_length) {
     var string = '';
     for (var i = 0; i < length; i++) {
       string += this.CHARS[Math.floor(Math.random() 
@@ -111,17 +111,20 @@ var update = function (table, set, where, callback) {
     wherelist.join(' and ')), values, callback);
 };
 
-var makeid = function (callback) {
+var makeid = function (min_length, callback) {
   var genid = function (count) {
     var len = Math.ceil(Math.log(count + 1) /
       Math.log(token.CHARS.length)), id;
     return token.gen(len); 
   }, id;
-
   count('paste', function (err, all) {
     if (err != null) return callback(err);
     var next = function () {
       id = genid(all);
+      console.log("id.length(" + id.length + ") < " + min_length)
+      if (id.length < min_length) {
+        id = token.gen(min_length);
+      }
       count('paste', id, function (err, num) {
         if (err != null) return callback(err);
         if (num == 0) return callback(null, id);
@@ -145,10 +148,10 @@ exports.get = function (id, callback) {
   });
 };
 exports.create = function (paste, callback) {
-  makeid(function (err, id) {
+  makeid(paste.private ? 16 : 1, function (err, id) {
     if (err != null) return callback(err);
     paste.id = id;
-    paste.secret = token.gen(16);
+    paste.secret = token.gen(16, paste.private ? true : false);
     paste.created = new Date();
     insert('paste', paste, function (err, res) {
       if (err != null) return callback(err);

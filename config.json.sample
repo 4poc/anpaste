@@ -9,5 +9,11 @@
   "server": {
     "bind": "0.0.0.0",
     "port": 31232
+  },
+  "announce": {
+    "channel": "<channel>",
+    "host": "<host>",
+    "port": "7272",
+    "password": "<pw>"
   }
 }

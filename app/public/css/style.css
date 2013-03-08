@@ -11,13 +11,22 @@
   display: none;
 }
 body {
-  margin: 20px;
+  margin: 30px;
 }
 h1 {
   border-bottom: 1px solid #e7e7e7;
   font-family: monaco, monospace;
   font-size: 18px;
   color: #444;
+  margin-bottom: 2px;
+}
+h2 {
+  border-bottom: 1px solid #e7e7e7;
+  font-size: 12px;
+  color: #444;
+  margin: 3px;
+  font-style: italic;
+  font-weight: normal;
 }
 code {
   font-size: 12px;
@@ -41,14 +50,17 @@ footer {
   font-size: 12px;
 }
 form {
-  position: absolute;
+  padding: 5px 5px 5px 1px;
 }
 form label {
   display: block;
   margin-top: 4px;
 }
+form input[type="submit"] {
+  padding: 3px 8px;
+}
 form input[type="text"] {
-  width: 640px;
+  width: 99%;
   font-family: monaco, monospace;
   font-size: 16px;
   font-weight: bold;
@@ -58,10 +70,14 @@ form input[type="text"] {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
+form input[type="checkbox"] {
+  margin-top: 5px;
+  vertical-align: -3px;
+}
 form textarea {
-  width: 640px;
+  width: 99%;
   font-family: monaco;
-  font-size: 13px;
+  font-size: 11px;
   padding: 3px;
   height: 350px;
   border: 1px solid #e7e7e7;
@@ -69,25 +85,37 @@ form textarea {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
-form select {
-  width: 120px;
-}
 form .options {
   display: block;
-  width: 650px;
+  padding-left: 1px;
+}
+form .options h2 {
+  width: 250px;
+}
+form .options .selects {
+  width: 350px;
+}
+form .options .selects div {
+  display: inline-block;
+  padding: 0px 0px 6px 6px;
+}
+form .options label.inline {
+  display: inline !important;
 }
 form .options .left {
   padding-right: 15px;
   display: inline;
   float: left;
 }
-form .options .left label[for="encrypted"] {
-  display: inline !important;
-}
 form .options .submit {
+  padding-top: 4px;
   display: block;
   text-align: right;
   float: right;
+}
+form .options .shift {
+  font-size: 10px;
+  font-style: italic;
 }
 a {
   color: #455EA9;
@@ -98,7 +126,6 @@ a:hover {
 }
 header {
   border-bottom: 1px solid #e7e7e7;
-  width: 648px;
   margin-bottom: 12px;
 }
 header .urls {
@@ -116,7 +143,6 @@ header .time {
 }
 footer {
   border-top: 1px solid #e7e7e7;
-  width: 648px;
   margin-top: 12px;
 }
 footer .time {
@@ -133,7 +159,7 @@ footer .time {
   -moz-border-radius: 3px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   font-size: 12px;
-  margin: 0px 0px 12px 0px;
+  margin: 5px 0px 5px 0px;
   padding: 8px;
   display: inline-block;
 }

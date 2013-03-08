@@ -22,7 +22,9 @@ CREATE TABLE paste (
     secret VARCHAR(16), -- random key can be used to delete or edit
     expire TIMESTAMP WITH TIME ZONE,
     created TIMESTAMP WITH TIME ZONE,
-    encrypted BOOLEAN
+    encrypted BOOLEAN,
+    language VARCHAR(32),
+    private BOOLEAN
 );
 ALTER TABLE paste OWNER TO paste;
 

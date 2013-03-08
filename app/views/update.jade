@@ -25,7 +25,6 @@ block content
     input(type='hidden', name='secret', value='#{paste.secret}')
     input(type='hidden', name='encrypted', value='#{paste.encrypted ? 'true' : 'false'}')
 
-
     label(for='summary') summary
     input(type='text', name='summary', value='#{paste.summary}')
 
@@ -37,8 +36,24 @@ block content
 
     .options
 
+      div.left
+
+        h2 paste options
+
+        .selects
+          div
+            label(for='language') language
+            select#language(name='language')
+              each lang in brush
+                option(value=lang[1], selected=paste.language==lang[1]?true:false) #{lang[2]}
+
+        div.hidden
+          input#tabkeys(type='checkbox', name='tabkeys', value='true')
+          label.inline(for='tabkeys') tab-keys inserts tabstops
+
       div.submit
 
+        .shift press shift-enter to update
         input(type='submit', name='update', value='update')
 
 

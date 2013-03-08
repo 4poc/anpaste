@@ -3,20 +3,38 @@ include mixins/time
 doctype 5
 html
   head
-    title pastebin
+    if typeof paste !== 'undefined'
+      if paste.summary != ''
+        title #{paste.summary}
+      else
+        title #{domain}/#{paste.id}
+    else
+      title #{domain}
+
     link(rel='stylesheet', href='/css/style.css')
-    link(rel='stylesheet', href='/js/highlight.js/styles/zenburn.css')
     script(type='text/javascript', src='/js/jquery-1.9.1.js')
     script(type='text/javascript', src='/js/jquery.easydate-0.2.4.js')
-    script(type='text/javascript', src='/js/highlight.js/highlight.pack.js')
     script(type='text/javascript', src='/js/sjcl.js')
+    script(type='text/javascript', src='/js/tabIndent.js')
+
+    script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.js')
+    if typeof paste !== 'undefined' && paste.language && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
+      script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{lang_brush[paste.language][0]}')
+
+    link(rel='stylesheet', href='/js/syntaxhighlighter/styles/shCore.css')
+    link(rel='stylesheet', href='/js/syntaxhighlighter/styles/shThemeDefault.css')
+
     script(type='text/javascript', src='/js/client.js')
     
   body
 
-    noscript
-      .notice
-        | To view or create encrypted pastes, activate javascript.
+    if typeof paste !== 'undefined'
+      if paste.summary != ''
+        h1 #{paste.summary}
+      else
+        h1 #{domain}/#{paste.id}
+    else
+      h1 #{domain}
     
     if typeof notice !== 'undefined' && notice
       .notice

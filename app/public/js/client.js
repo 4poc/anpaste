@@ -2,7 +2,10 @@
 $(function () {
   $(".easydate").easydate();
 
-  $('#encrypted').removeClass('hidden');
+  //$('div > #encrypted').parent().removeClass('hidden');
+  //$('div > #encrypted').parent().removeClass('hidden');
+  $('div > #encrypted').parent().removeClass('hidden');
+  $('div > #tabkeys').parent().removeClass('hidden');
 
   function encrypt(password, content) {
     return sjcl.encrypt(password, content);
@@ -23,7 +26,7 @@ $(function () {
   }
 
   var token = {
-    CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_~',
+    CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
     gen: function (length) {
       var string = '';
       for (var i = 0; i < length; i++) {
@@ -34,27 +37,52 @@ $(function () {
     }
   };
 
+  $('#tabkeys').change(function (event) {
+    var content = $('textarea[name="content"]')[0];
+    if ($(this).is(':checked')) {
+      tabIndent.render(content);
+    }
+    else {
+      tabIndent.remove(content);
+    }
+  });
+
+  $('textarea').keydown(function (e) {
+    if (e.keyCode == 13) {
+      if (e.shiftKey) {
+        $('input[type="submit"]').click();
+        e.preventDefault();
+      }
+    }
+  });
+
   //
   // Create Ajax POST
   // Encrypt new paste (with random password)
   //
   $('input[name="create"]').click(function (event) {
-    event.preventDefault();
-
     var submit = $(this)
       , summary = $('input[name="summary"]').val()
       , content = $('textarea[name="content"]').val()
+      , language = $('#language').val()
+      , private = $('#private').val()
       , password = '';
 
     if ($('input[name="encrypted"]').is(':checked')) {
       password = token.gen(24);
       content = encrypt(password, content);
+      event.preventDefault();
+    }
+    else {
+      return;
     }
 
     var data = {
       summary: summary,
       content: content,
-      expiration: $('select[name="expiration"]').val(),
+      expire: $('select[name="expire"]').val(),
+      private: private,
+      language: language,
       encrypted: password != '' ? 'true' : 'false'
     };
 
@@ -78,6 +106,7 @@ $(function () {
       , secret = $('input[name="secret"]').val() 
       , summary = $('input[name="summary"]').val()
       , content = $('textarea[name="content"]').val()
+      , language = $('#language').val()
       , password = location.hash.length > 1 ? location.hash.substring(1) : null;
 
     if (password) {
@@ -88,14 +117,15 @@ $(function () {
       id: id,
       secret: secret,
       summary: summary,
-      content: content
+      content: content,
+      language: language
     };
 
     submit.attr('disabled', true);
 
     $.post('/update', data, function (data) {
       submit.removeAttr('disabled');
-      window.location = func.url(['/update', data.id, data.secret], password);
+      window.location = url(['/update', data.id, data.secret], password);
     });
 
     event.preventDefault();
@@ -123,12 +153,12 @@ $(function () {
     // div element
     else if ($('#content').length > 0) {
       $('#content').text(content);
-
-      // with highlighting
-      hljs.tabReplace = '    ';
-      hljs.initHighlighting();
+      // activate syntax highting
     }
   }
+
+  SyntaxHighlighter.all();
+  SyntaxHighlighter.defaults.toolbar = false;
 
   //
   // Append the password in urls:
@@ -147,7 +177,7 @@ $(function () {
   // Check if the paste is expired. If it is, redirect back to /
   //
   function redirectIfExpired() {
-    var expire = new Date($('#expire').data('expire'));
+    var expire = new Date($('#expire').attr('title'));
     if (new Date() > expire) {
       window.location = '/?expired';
     }
@@ -156,4 +186,26 @@ $(function () {
     redirectIfExpired();
     setInterval(redirectIfExpired, 1000);
   }
+
+  //
+  // Hide announce if client-side encryption is checked
+  // Hide encryption if announce is checked
+  //
+  $('#encrypted').change(function (event) {
+    if ($(this).is(':checked')) {
+      $('div > #private').attr('checked', false).attr('disabled', true);
+      $('div > #announce').attr('checked', false).attr('disabled', true);
+    }
+    else {
+      $('div > #announce').removeAttr('disabled');
+      $('div > #private').removeAttr('disabled');
+    }
+  });
+  $('#announce').change(function (event) {
+    if ($(this).is(':checked'))
+      $('div > #encrypted').attr('checked', false).attr('disabled', true);
+    else
+      $('div > #encrypted').removeAttr('disabled');
+  });
+
 });

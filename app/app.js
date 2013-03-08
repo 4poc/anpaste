@@ -1,6 +1,7 @@
 
 // Module dependencies
 var express = require('express');
+var strftime = require('strftime');
 
 var path = require('path');
 var http = require('http');
@@ -8,6 +9,8 @@ var http = require('http');
 // Internal modules
 var routes = require('./routes');
 var mid = require('./middlewares.js');
+var store = require('./lib/store.js');
+
 
 // Initialisation of express
 var app = express();
@@ -16,7 +19,7 @@ var app = express();
 // Configuration
 var public_path = path.join(__dirname, './public');
 var config = require('../config.json');
-
+var brush = require('../brush.json');
 
 app.configure(function () {
   // Setup view tempates
@@ -38,6 +41,7 @@ app.configure(function () {
 
   // setup locals / view/request helpers
   app.use(function (req, res, next) {
+    res.locals.domain = req.headers.host;
     res.locals.url = function (args, hash) {
       var url = req.protocol + '://' + req.headers.host + '/' + args.join('/');
       if (typeof hash != 'undefined' && hash != null && hash != '') {
@@ -48,6 +52,10 @@ app.configure(function () {
       return url;
     };
 
+    res.locals.config = config;
+    res.locals.brush = brush;
+    res.locals.strftime = strftime;
+
     next();
   });
 });
@@ -55,7 +63,7 @@ app.configure(function () {
 
 // sets a timer to delete expired pastes every 5 minutes
 setInterval(function () {
-  console.log('delete expired');
+  console.log('delete expired pastes');
   store.deleteExpired(function (err) {
     if (err != null) console.error(err);
   });
@@ -66,7 +74,7 @@ setInterval(function () {
 app.get ('/'                   , routes.index);
 app.get ('/create'             , routes.createPasteForm);
 app.post('/create'             , routes.createPaste);
-app.get ('/:id.:format?'       , routes.readPaste);
+app.get ('/:id.:format?/:file?', routes.readPaste);
 app.get ('/update/:id/:secret' , routes.updatePasteForm);
 app.post('/update'             , routes.updatePaste);
 app.get ('/delete/:id/:secret' , routes.deletePasteForm);

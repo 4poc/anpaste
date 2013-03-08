@@ -3,9 +3,9 @@ mixin time(paste)
   .time
     span
       | created&nbsp;
-      span.easydate #{paste.created}
+      span.easydate(title=paste.created.toString()) #{strftime(config.ftime, paste.created)}
     if paste.expire
       span 
         | expires:&nbsp;
-        span.easydate#expire(data-expire=paste.expire.toString()) #{paste.expire}
+        span.easydate#expire(title=paste.expire.toString()) #{strftime(config.ftime, paste.expire)}
 

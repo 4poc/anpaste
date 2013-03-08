@@ -1,17 +1,14 @@
 extends layout
 
 block content
-  if paste.summary
-    h1 #{paste.summary}
-
   if paste.encrypted
     #encrypted-data #{paste.content}
 
   pre
     if !paste.encrypted
-      code#content !{paste.content}
+      pre#content(class='brush: #{paste.language}') !{paste.content}
     else
-      code#content
+      pre#content(class='brush: #{paste.language}')
 
   footer
 

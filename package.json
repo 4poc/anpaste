@@ -10,7 +10,8 @@
     "jade": "0.x",
     "sprintf": "0.1.x",
     "pg": "0.12.x",
-    "validator": "0.4.x"
+    "validator": "0.4.x",
+    "strftime": "0.5.x"
   },
   "engines": { "node": ">= 0.8.x" }
 }

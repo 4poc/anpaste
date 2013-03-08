@@ -4,10 +4,7 @@ block content
   header
     a(href='/') create new
 
-    p
-      | are you sure to delete paste
-      code #{paste.id}
-      | ?
+    p are you sure to delete paste #{paste.id}?
 
   form(method='POST', action='/delete')
     input(type='hidden', name='id', value='#{paste.id}')

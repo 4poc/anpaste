@@ -1,7 +1,13 @@
 var sprintf = require('sprintf').sprintf;
 
 var store = require('../lib/store.js');
+var announce = require('../lib/announce.js').announce;
 
+var brush = require('../../brush.json');
+var lang_brush = {};
+for (var i = 0; i < brush.length; i++) {
+  lang_brush[brush[i][1]] = brush[i];
+}
 
 exports.index = function (req, res, next) {
   res.redirect('/create');
@@ -12,9 +18,13 @@ exports.readPaste = function (req, res, next) {
   var id = req.params.id, format = req.params.format || 'html';
   store.get(id, function (err, paste) {
     if (err) return next();
+    if (req.params.file) {
+      format = 'raw';
+      res.set('Content-Disposition', 'attachment; filename='+req.params.file);
+    }
 
     if (format == 'html') {
-      res.render('show', {paste: paste});
+      res.render('show', {lang_brush: lang_brush, paste: paste});
     }
     else if (format == 'raw') {
       res.set('Content-Type', 'text/plain; charset=utf-8; charset=utf-8');
@@ -37,27 +47,40 @@ exports.createPasteForm = function (req, res) {
 
 exports.createPaste = function (req, res, next) {
   if (req.body.content.length == 0) throw new Error('content required');
+  console.log(require('util').inspect(req.body));
   var paste = {
     summary: req.body.summary,
     content: req.body.content,
     expire: null,
-    encrypted: req.body.encrypted === 'true' ? true : false
+    encrypted: req.body.encrypted === 'true' ? true : false,
+    private: req.body.private === 'true' ? true : false,
+    language: req.body.language
   };
-  if (req.body.expiration != '0') {
+  if (req.body.expire != '0') {
     var exp = new Date();
-    exp.setTime(exp.getTime() + parseInt(req.body.expiration, 10) * 1000);
+    exp.setTime(exp.getTime() + parseInt(req.body.expire, 10) * 1000);
     paste.expire = exp;
   }
+
   store.create(paste, function (err, paste) {
     if (err != null) return next(err);
 
     console.log('new paste created, id: ' + paste.id);
 
+    if (req.body.announce == 'true') {
+      var url = 'http://' + req.headers.host + '/' + paste.id;
+      var message = 'new paste submitted :: ' + url;
+      if (paste.summary != '') {
+        message += ' :: ' + paste.summary;
+      }
+      announce(message);
+    }
+
     if (req.xhr) {
       res.send({id: paste.id, secret: paste.secret});
     }
     else {          
-      res.redirect(func.url(['update', paste.id, paste.secret]));
+      res.redirect(res.locals.url(['update', paste.id, paste.secret]));
     }
   });
 };
@@ -78,7 +101,8 @@ exports.updatePaste = function (req, res, next) {
     id: req.body.id,
     secret: req.body.secret,
     summary: req.body.summary,
-    content: req.body.content
+    content: req.body.content,
+    language: req.body.language
   };
 
   store.update(paste, function (err) {
@@ -87,7 +111,7 @@ exports.updatePaste = function (req, res, next) {
       res.send({id: paste.id, secret: paste.secret});
     }
     else {
-      res.redirect(func.url(['update', paste.id, paste.secret]));
+      res.redirect(res.locals.url(['update', paste.id, paste.secret]));
     }
   });
 };

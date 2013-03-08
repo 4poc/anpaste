@@ -13,26 +13,43 @@ block content
 
       div.left
 
-        label(for='type') expiration
-        select(name='expiration')
-          option(value='0') never
-          option(value='#{30}') 30 seconds
-          option(value='#{5 * 60}') 5 minutes
-          option(value='#{20 * 60}') 20 minutes
-          option(value='#{3 * 60 * 60}') 3 hours
-          option(value='#{6 * 60 * 60}') 6 hours
-          option(value='#{12 * 60 * 60}') 12 hours
-          option(value='#{24 * 60 * 60}') 24 hours
-          option(value='#{7 * 24 * 60 * 60}') 7 days
-          option(value='#{31 * 24 * 60 * 60}') 1 month
+        h2 paste options
 
-        #encrypted.hidden
+        .selects
+          div
+            label(for='language') language
+            select#language(name='language')
+              each lang in brush
+                option(value=lang[1]) #{lang[2]}
 
-          input(type='checkbox', name='encrypted', checked=true, value='true')
-          label(for='encrypted') client-side encryption
+          div
+            label(for='expire') expire
+            select#expire(name='expire')
+              option(value='0') never
+              option(value='#{30 * 60}') half an hour
+              option(value='#{24 * 60 * 60}') one day
+              option(value='#{7 * 24 * 60 * 60}') a week
+              option(value='#{31 * 24 * 60 * 60}') one month
+
+        div.hidden
+          input#tabkeys(type='checkbox', name='tabkeys', value='true')
+          label.inline(for='tabkeys') tab-keys inserts tabstops
+
+        div.hidden
+          input#encrypted(type='checkbox', name='encrypted', value='true')
+          label.inline(for='encrypted') (client-side) encryption
+
+        div
+          input#private(type='checkbox', name='private', value='true')
+          label.inline(for='private') paste private
+
+        div
+          input#announce(type='checkbox', name='announce', value='true')
+          label.inline(for='announce') announce in #woot
 
       div.submit
 
+        .shift press shift-enter to submit
         input(type='submit', name='create', value='create')
 
 
