@@ -20,8 +20,6 @@ block content
                 a(href=url(['update', paste.id, session.secrets[paste.id]])) update
               li
                 a(href=url(['delete', paste.id, session.secrets[paste.id]])) delete
-            li
-              a(href='/create') create new
         h3 
           a(href='/#{paste.id}')
             if paste.summary != ''

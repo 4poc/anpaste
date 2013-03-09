@@ -19,9 +19,6 @@ html
 
     script(type='text/javascript', src='/js/sh-bugfix.js')
     script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.js')
-    // if typeof paste !== 'undefined' && paste.language && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
-    //   script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{lang_brush[paste.language][0]}')
-    // if typeof pastes !== 'undefined' && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
 
     if typeof brush_list !== 'undefined'
       each brush in brush_list
@@ -40,6 +37,9 @@ html
     if typeof notice !== 'undefined' && notice
       .notice
         | #{notice}
+
+    p(style='text-align:center')
+      i under active development, please report bugs!
 
     block content
 

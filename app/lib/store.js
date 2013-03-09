@@ -38,6 +38,8 @@ db.serialize(function () {
       db.run('CREATE TABLE paste (' +
              '    id           TEXT PRIMARY KEY,' +
              '    secret       TEXT,' +
+             '    username     TEXT,' +
+
              '    summary      TEXT,' +
              '    content      TEXT,' +
 
@@ -56,6 +58,19 @@ db.serialize(function () {
              '    data         TEXT' +
              ');');
 
+      console.log('[init] create table: user');
+      db.run('CREATE TABLE user (' +
+             '    username            TEXT PRIMARY KEY,' +
+             '    password            TEXT,' +
+             '    salt                TEXT,' +
+
+             '    default_language    TEXT,' +
+             '    default_expire      INTEGER,' +
+             '    default_encryption  INTEGER,' +
+             '    default_private     INTEGER,' +
+             '    default_announce    INTEGER,' +
+             '    default_markdown    INTEGER' +
+             ');');
     }
   });
 
