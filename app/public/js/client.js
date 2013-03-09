@@ -157,6 +157,7 @@ $(function () {
 
   SyntaxHighlighter.all();
   SyntaxHighlighter.defaults.toolbar = false;
+  SyntaxHighlighter.defaults.gutter = false;
 
   //
   // Append the password in urls:

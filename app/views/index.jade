@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  header
+    ul
+      li.first
+        a(href='/create') create new
+
+  h1
+    a(href='/') #{domain}
+
+  ul.paste_list
+    each paste in pastes
+      li.paste
+        .meta
+          ul
+            mixin time(paste)
+            if session.secrets && session.secrets[paste.id]
+              li
+                a(href=url(['update', paste.id, session.secrets[paste.id]])) update
+              li
+                a(href=url(['delete', paste.id, session.secrets[paste.id]])) delete
+            li
+              a(href='/create') create new
+        h3 
+          a(href='/#{paste.id}')
+            if paste.summary != ''
+              | #{paste.summary}
+            else
+              | ##{paste.id}
+        pre#content(class='brush: #{paste.language}')
+          | #{paste.content}
+
+  .pager
+    if page > 1
+      a.previous(href='/?page=#{page-1}') &laquo; previous page
+    if page < num_pages
+      a.next(href='/?page=#{page+1}') next page &raquo;
+

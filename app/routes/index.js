@@ -1,8 +1,10 @@
 var sprintf = require('sprintf').sprintf;
 var util = require('util');
+var _ = require('underscore');
 
 var store = require('../lib/store.js');
 var announce = require('../lib/announce.js').announce;
+var config = require('../../config.json');
 
 var brush = require('../../brush.json');
 var lang_brush = {};
@@ -11,7 +13,42 @@ for (var i = 0; i < brush.length; i++) {
 }
 
 exports.index = function (req, res, next) {
-  res.redirect('/create');
+  var page = parseInt(req.query.page, 10) || 1;
+
+  var where = 'where (expire is null or expire > ?) and encrypted = 0 and private = 0 order by created desc';
+
+  var now = new Date().getTime();
+
+  // count all
+  store.query('select count(*) as num from paste '+where, [now], function (err, rows) {
+    if (err != null) return next(err);
+    var all = rows[0].num;
+    var num_pages = Math.floor(all / config.index.per_page);
+    var start = num_pages * (page-1);
+
+    store.query('select * from paste '+where+' limit '+start+','+config.index.per_page, [now], function (err, pastes) {
+      if (err != null) return next(err);
+      _.each(pastes, function (paste) {
+        paste.created = new Date(parseInt(paste.created, 10));
+        if (paste.expire)
+          paste.expire = new Date(parseInt(paste.expire, 10));
+
+        var content = paste.content.split('\n');
+        paste.content = content.slice(0, config.index.max_lines).join('\n');
+      });
+      console.log(util.inspect(pastes));
+      var brush_list = _.map(pastes, function (paste) {
+        if (lang_brush[paste.language])
+          return lang_brush[paste.language][0];
+      });
+      console.log(util.inspect(brush_list));
+      brush_list = _.uniq(brush_list);
+      res.render('index', {num_pages:num_pages, all:all, page:page, brush_list: brush_list, pastes: pastes});
+    });
+
+  });
+
+
 };
 
 
@@ -25,7 +62,13 @@ exports.readPaste = function (req, res, next) {
     }
 
     if (format == 'html') {
-      res.render('show', {lang_brush: lang_brush, paste: paste});
+      var brush_list = ['shBrushPlain.js'];
+      if (lang_brush[paste.language])
+        brush_list = [lang_brush[paste.language][0]];
+      else
+        paste.language = 'plain';
+
+      res.render('show', {brush_list: brush_list, paste: paste});
     }
     else if (format == 'raw') {
       res.set('Content-Type', 'text/plain; charset=utf-8; charset=utf-8');

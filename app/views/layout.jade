@@ -19,8 +19,13 @@ html
 
     script(type='text/javascript', src='/js/sh-bugfix.js')
     script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.js')
-    if typeof paste !== 'undefined' && paste.language && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
-      script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{lang_brush[paste.language][0]}')
+    // if typeof paste !== 'undefined' && paste.language && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
+    //   script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{lang_brush[paste.language][0]}')
+    // if typeof pastes !== 'undefined' && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
+
+    if typeof brush_list !== 'undefined'
+      each brush in brush_list
+        script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{brush}')
 
     link(rel='stylesheet', href='/js/syntaxhighlighter/styles/shCore.css')
     link(rel='stylesheet', href='/js/syntaxhighlighter/styles/shThemeDefault.css')
@@ -28,6 +33,9 @@ html
     script(type='text/javascript', src='/js/client.js')
     
   body
+
+    script(type='text/javascript')
+      var session_test = #{session.test || false};
 
     if typeof notice !== 'undefined' && notice
       .notice

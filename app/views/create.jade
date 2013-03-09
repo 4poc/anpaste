@@ -1,6 +1,9 @@
 extends layout
 
 block content
+  h1
+    a(href='/') #{domain}
+
   // create form with settings
   form(method='POST', action='/create')
     label(for='summary') summary

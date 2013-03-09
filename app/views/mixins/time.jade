@@ -1,6 +1,6 @@
 
 mixin time(paste)
-  li.time created&nbsp;
+  li.time.first created&nbsp;
     span.easydate(title=paste.created.toString()) #{strftime(config.ftime, paste.created)}
 
   if paste.expire

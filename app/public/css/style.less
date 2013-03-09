@@ -26,8 +26,8 @@ body {
 
 h1 {
   border-bottom: 1px solid @bcolor;
-  font-family: monaco, monospace;
-  font-size: 18px;
+  font-family: monaco, terminus, monospace;
+  font-size: 21px;
   color: #444;
   margin-bottom: 2px;
 }
@@ -42,6 +42,16 @@ h2 {
   margin: 3px;
   font-style: italic;
   font-weight: normal;
+}
+
+h1,h2,h3 {
+  margin-top: 0px;
+  a {
+    color: #444;
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }
 
 code {
@@ -148,9 +158,28 @@ a {
   }
 }
 
-header {
-  border-bottom: 1px solid @bcolor;
-  margin-bottom: 12px;
+header, .meta {
+  font-size: 11px;
+  color: #999;
+
+  ul {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    li {
+      display: inline;
+      &:before {
+        padding: 4px;
+        content: "\00b7"
+      }
+    }
+    li.first {
+      &:before {
+        padding: 0px;
+        content: "";
+      }
+    }
+  }
   
   .urls {
     line-height: 12px;
@@ -170,11 +199,19 @@ header {
 
 }
 
-.meta {
-  font-size: 11px;
-  margin-bottom: -11px;
-  color: #999;
-
+ul.paste_list {
+  padding: 0;
+  list-style-type: none;
+  li.paste {
+    margin-bottom: 20px;
+    border-bottom: 1px solid @bcolor;
+  }
+  h3 {
+    margin: 0px;
+  }
+  .syntaxhighlighter {
+    margin: 2px 5px 5px 5px !important;
+  }
 }
 
 footer {

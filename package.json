@@ -11,7 +11,8 @@
     "sprintf": "0.1.x",
     "sqlite3": "2.1.x",
     "validator": "0.4.x",
-    "strftime": "0.5.x"
+    "strftime": "0.5.x",
+    "underscore": "1.4.x"
   },
   "engines": { "node": ">= 0.8.x" }
 }

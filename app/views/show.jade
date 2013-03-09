@@ -4,22 +4,29 @@ block content
   header
     ul
       mixin time(paste)
+      if session.secrets && session.secrets[paste.id]
+        li
+          a(href=url(['update', paste.id, session.secrets[paste.id]])) update
+        li
+          a(href=url(['delete', paste.id, session.secrets[paste.id]])) delete
+      li
+        a(href='/create') create new
 
-  if paste.summary != ''
-    h1 #{paste.summary}
-  else
-    h1 #{domain}/#{paste.id}
+  h1
+    a.permalink(href='/#{paste.id}')
+      if paste.summary != ''
+        | #{paste.summary}
+      else
+        | #{domain}/#{paste.id}
 
   if paste.encrypted
     #encrypted-data #{paste.content}
 
-  pre
-    if !paste.encrypted
-      pre#content(class='brush: #{paste.language}') !{paste.content}
-    else
-      pre#content(class='brush: #{paste.language}')
+  if !paste.encrypted
+    pre#content(class='brush: #{paste.language}') !{paste.content}
+  else
+    pre#content(class='brush: #{paste.language}')
 
   footer
-    a(href='/') create new
 
 

@@ -15,8 +15,8 @@ body {
 }
 h1 {
   border-bottom: 1px solid #e7e7e7;
-  font-family: monaco, monospace;
-  font-size: 18px;
+  font-family: monaco, terminus, monospace;
+  font-size: 21px;
   color: #444;
   margin-bottom: 2px;
 }
@@ -30,6 +30,21 @@ h2 {
   margin: 3px;
   font-style: italic;
   font-weight: normal;
+}
+h1,
+h2,
+h3 {
+  margin-top: 0px;
+}
+h1 a,
+h2 a,
+h3 a {
+  color: #444;
+}
+h1 a:hover,
+h2 a:hover,
+h3 a:hover {
+  text-decoration: none;
 }
 code {
   font-size: 12px;
@@ -127,27 +142,60 @@ a {
 a:hover {
   text-decoration: underline;
 }
-header {
-  border-bottom: 1px solid #e7e7e7;
-  margin-bottom: 12px;
+header,
+.meta {
+  font-size: 11px;
+  color: #999;
 }
-header .urls {
+header ul,
+.meta ul {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+}
+header ul li,
+.meta ul li {
+  display: inline;
+}
+header ul li:before,
+.meta ul li:before {
+  padding: 4px;
+  content: "\00b7";
+}
+header ul li.first:before,
+.meta ul li.first:before {
+  padding: 0px;
+  content: "";
+}
+header .urls,
+.meta .urls {
   line-height: 12px;
 }
-header .urls a {
+header .urls a,
+.meta .urls a {
   font-family: monospace;
   font-size: 11px;
 }
-header .time {
+header .time,
+.meta .time {
   margin-top: 15px;
   font-style: italic;
   letter-spacing: 1px;
   font-size: 11px;
 }
-.meta {
-  font-size: 11px;
-  margin-bottom: -11px;
-  color: #999;
+ul.paste_list {
+  padding: 0;
+  list-style-type: none;
+}
+ul.paste_list li.paste {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e7e7e7;
+}
+ul.paste_list h3 {
+  margin: 0px;
+}
+ul.paste_list .syntaxhighlighter {
+  margin: 2px 5px 5px 5px !important;
 }
 footer {
   border-top: 1px solid #e7e7e7;

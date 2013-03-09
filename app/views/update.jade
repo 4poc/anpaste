@@ -1,24 +1,21 @@
 extends layout
 
 block content
-  mixin link(url)
-    a(href=url) #{url}
-
   header
-    a(href='/') create new
+    ul
+      mixin time(paste)
+      if session.secrets && session.secrets[paste.id]
+        li
+          a(href=url(['delete', paste.id, paste.secret])) delete
+      li
+        a(href='/create') create new
 
-    .urls
-      .show
-        strong Link:&nbsp;
-        mixin link(url([paste.id]))
-      .update
-        strong Update:&nbsp;
-        mixin link(url(['update', paste.id, paste.secret]))
-      .delete
-        strong Delete:&nbsp;
-        mixin link(url(['delete', paste.id, paste.secret]))
-
-    mixin time(paste)
+  h1
+    a.permalink(href='/#{paste.id}')
+      if paste.summary != ''
+        | update: #{paste.summary}
+      else
+        | update: #{paste.id}
 
   form(method='POST', action='/update')
     input(type='hidden', name='id', value='#{paste.id}')
