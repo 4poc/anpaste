@@ -42,13 +42,14 @@ exports.createPasteForm = function (req, res) {
     notice = 'You were redirected because the post you looked at expired.';
   }
 
+  req.session.test = true;
+
   res.render('create', {notice: notice});
 };
 
 
 exports.createPaste = function (req, res, next) {
   if (req.body.content.length == 0) throw new Error('content required');
-  console.log(require('util').inspect(req.body));
   var paste = {
     summary: req.body.summary,
     content: req.body.content,
@@ -59,8 +60,7 @@ exports.createPaste = function (req, res, next) {
   };
   if (req.body.expire != '0') {
     var exp = new Date();
-    exp.setTime(exp.getTime() + parseInt(req.body.expire, 10) * 1000);
-    paste.expire = exp;
+    paste.expire = exp.getTime() + parseInt(req.body.expire, 10) * 1000;
   }
 
   store.create(paste, function (err, paste) {
@@ -77,11 +77,22 @@ exports.createPaste = function (req, res, next) {
       announce(message);
     }
 
+    // store secret in session data
+    if (!req.session.secrets) {
+      req.session.secrets = {};
+    }
+    req.session.secrets[paste.id] = paste.secret;
+
     if (req.xhr) {
       res.send({id: paste.id, secret: paste.secret});
     }
     else {          
-      res.redirect(res.locals.url(['update', paste.id, paste.secret]));
+      if (req.session.test) {
+        res.redirect(res.locals.url([paste.id]));
+      }
+      else {
+        res.redirect(res.locals.url(['update', paste.id, paste.secret]));
+      }
     }
   });
 };
@@ -92,8 +103,6 @@ exports.updatePasteForm = function (req, res, next) {
   store.get(id, function (err, paste) {
     if (err != null) return next(err);
     if (secret !== paste.secret) return next(new Error('wrong secret'));
-    console.log('TEST');
-    console.log(util.inspect(paste));
     res.render('update', {paste: paste});
   });
 };
@@ -108,9 +117,9 @@ exports.updatePaste = function (req, res, next) {
     language: req.body.language
   };
 
-  store.get(id, function (err, paste) {
+  store.get(paste.id, function (err, _paste) {
     if (err != null) return next(err);
-    if (secret !== paste.secret) return next(new Error('wrong secret'));
+    if (_paste.secret !== paste.secret) return next(new Error('wrong secret'));
     store.update(paste, function (err) {
       if (err != null) return next(err);
       if (req.xhr) {
@@ -144,6 +153,12 @@ exports.deletePaste = function (req, res, next) {
       res.redirect('/');
     });
   });
+};
+
+
+exports.notFound = function (req, res, next) {
+  res.status(404);
+  res.render('not_found');
 };
 
 

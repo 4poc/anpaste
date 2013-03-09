@@ -41,13 +41,21 @@ db.serialize(function () {
              '    summary      TEXT,' +
              '    content      TEXT,' +
 
-             '    expire       TEXT,' +
-             '    created      TEXT,' +
+             '    expire       LONG,' +
+             '    created      LONG,' +
 
              '    encrypted    INTEGER,' +
              '    language     TEXT,' +
              '    private      INTEGER' +
              ');');
+
+      console.log('[init] create table: session');
+      db.run('CREATE TABLE session (' +
+             '    id           TEXT PRIMARY KEY,' +
+             '    expired      TEXT,' +
+             '    data         TEXT' +
+             ');');
+
     }
   });
 
@@ -87,6 +95,12 @@ var query = function (query, values, callback) {
   db.all(query, values, callback);
 };
 
+var run = function (query, values, callback) {
+  callback = (typeof values == 'function') ? values : callback;
+  console.log('run query: ' + query + ', ' + util.inspect(values));
+  db.run(query, values, callback);
+};
+
 // count paste entries with an optional id
 var count = function (table, id, callback) {
   callback = (typeof id == 'function') ? id : callback;
@@ -98,7 +112,6 @@ var count = function (table, id, callback) {
   query('select count(*) as num from ' + table + where, val, 
     function (err, res) {
       if (err != null) return callback(err);
-      console.log(util.inspect(res));
       callback(null, res[0].num);
   });
 };
@@ -172,6 +185,9 @@ var makeid = function (min_length, callback) {
 exports.connect = function (callback) {
   return connect(callback);
 };
+exports.query = query;
+exports.run = run;
+exports.count = count;
 exports.get = function (id, callback) {
   query('select * from paste where id = ?', [id], function (err, res) {
     if (err != null) return callback(err);
@@ -179,12 +195,11 @@ exports.get = function (id, callback) {
     var paste = res[0];
 
     // convert datetime columns into date objects
-    paste.created = new Date(parseInt(paste.created));
+    paste.created = new Date(parseInt(paste.created, 10));
     if (paste.expire)
-      paste.expire = new Date(parseInt(paste.expire));
-    console.log(util.inspect(paste));
+      paste.expire = new Date(parseInt(paste.expire, 10));
 
-    if (paste.expire != null && new Date() > paste.expire)
+    if (paste.expire != null && new Date().getTime() > paste.expire)
       return callback(new Error('paste expired'));
 
     callback(null, paste);
@@ -195,7 +210,7 @@ exports.create = function (paste, callback) {
     if (err != null) return callback(err);
     paste.id = id;
     paste.secret = token.gen(16, paste.private ? true : false);
-    paste.created = new Date();
+    paste.created = new Date().getTime();
     insert('paste', paste, function (err, res) {
       if (err != null) return callback(err);
       callback(null, paste);
@@ -209,7 +224,8 @@ exports.delete = function (id, callback) {
   query('delete from paste where id = ?', [id], callback);
 };
 exports.deleteExpired = function (callback) {
-  query("delete from paste where expire is not null and date('now') > expire",
+  var now = new Date().getTime();
+  query("delete from paste where expire is not null and ? > expire", now,
     callback);
 };
 exports.disconnect = disconnect;

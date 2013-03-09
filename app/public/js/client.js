@@ -2,8 +2,6 @@
 $(function () {
   $(".easydate").easydate();
 
-  //$('div > #encrypted').parent().removeClass('hidden');
-  //$('div > #encrypted').parent().removeClass('hidden');
   $('div > #encrypted').parent().removeClass('hidden');
   $('div > #tabkeys').parent().removeClass('hidden');
 

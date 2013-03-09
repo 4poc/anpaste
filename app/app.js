@@ -12,11 +12,7 @@ var routes = require('./routes');
 var mid = require('./middlewares.js');
 var store = require('./lib/store.js');
 
-
-store.connect(function (err, db) {
-
-});
-
+var ConnectStore = require('./lib/connect-store.js')(express);
 
 // Initialisation of express
 var app = express();
@@ -37,6 +33,14 @@ app.configure(function () {
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+
+
+  app.use(express.cookieParser());
+  app.use(express.session({
+    store: new ConnectStore,
+    secret: config.session.secret,
+    cookie: { maxAge: config.session.maxAge }
+  }));
 
   app.use(express.static(public_path));
   // compile the less stylesheet to a css
@@ -62,6 +66,7 @@ app.configure(function () {
     res.locals.config = config;
     res.locals.brush = brush;
     res.locals.strftime = strftime;
+    res.locals.session = req.session;
 
     next();
   });
@@ -86,6 +91,7 @@ app.get ('/update/:id/:secret' , routes.updatePasteForm);
 app.post('/update'             , routes.updatePaste);
 app.get ('/delete/:id/:secret' , routes.deletePasteForm);
 app.post('/delete'             , routes.deletePaste);
+app.get ('*'                   , routes.notFound);
 
 
 // Error messages all redirect to create

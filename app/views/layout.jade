@@ -17,6 +17,7 @@ html
     script(type='text/javascript', src='/js/sjcl.js')
     script(type='text/javascript', src='/js/tabIndent.js')
 
+    script(type='text/javascript', src='/js/sh-bugfix.js')
     script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.js')
     if typeof paste !== 'undefined' && paste.language && typeof lang_brush !==  'undefined' && lang_brush[paste.language]
       script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{lang_brush[paste.language][0]}')
@@ -28,14 +29,6 @@ html
     
   body
 
-    if typeof paste !== 'undefined'
-      if paste.summary != ''
-        h1 #{paste.summary}
-      else
-        h1 #{domain}/#{paste.id}
-    else
-      h1 #{domain}
-    
     if typeof notice !== 'undefined' && notice
       .notice
         | #{notice}

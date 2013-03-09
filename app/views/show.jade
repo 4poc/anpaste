@@ -1,6 +1,15 @@
 extends layout
 
 block content
+  header
+    ul
+      mixin time(paste)
+
+  if paste.summary != ''
+    h1 #{paste.summary}
+  else
+    h1 #{domain}/#{paste.id}
+
   if paste.encrypted
     #encrypted-data #{paste.content}
 
@@ -11,8 +20,6 @@ block content
       pre#content(class='brush: #{paste.language}')
 
   footer
-
-    mixin time(paste)
-
     a(href='/') create new
+
 
