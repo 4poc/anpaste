@@ -179,7 +179,7 @@ $(function () {
   function redirectIfExpired() {
     var expire = new Date($('#expire').attr('title'));
     if (new Date() > expire) {
-      window.location = '/?expired';
+      window.location = '/create?expired';
     }
   }
   if ($('#expire').length > 0) {

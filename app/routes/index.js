@@ -1,4 +1,5 @@
 var sprintf = require('sprintf').sprintf;
+var util = require('util');
 
 var store = require('../lib/store.js');
 var announce = require('../lib/announce.js').announce;
@@ -91,6 +92,8 @@ exports.updatePasteForm = function (req, res, next) {
   store.get(id, function (err, paste) {
     if (err != null) return next(err);
     if (secret !== paste.secret) return next(new Error('wrong secret'));
+    console.log('TEST');
+    console.log(util.inspect(paste));
     res.render('update', {paste: paste});
   });
 };
@@ -105,14 +108,18 @@ exports.updatePaste = function (req, res, next) {
     language: req.body.language
   };
 
-  store.update(paste, function (err) {
+  store.get(id, function (err, paste) {
     if (err != null) return next(err);
-    if (req.xhr) {
-      res.send({id: paste.id, secret: paste.secret});
-    }
-    else {
-      res.redirect(res.locals.url(['update', paste.id, paste.secret]));
-    }
+    if (secret !== paste.secret) return next(new Error('wrong secret'));
+    store.update(paste, function (err) {
+      if (err != null) return next(err);
+      if (req.xhr) {
+        res.send({id: paste.id, secret: paste.secret});
+      }
+      else {
+        res.redirect(res.locals.url(['update', paste.id, paste.secret]));
+      }
+    });
   });
 };
 

@@ -1,20 +1,12 @@
 
 var sprintf = require('sprintf').sprintf;
-var pg = require('pg').native;
+var sqlite3 = require('sqlite3');
 
 var util = require('util');
 
 var config = require('../../config.json');
 
 // very simple persistence layer with some very strange query building
-
-var url = sprintf('postgres://%s:%s@%s:%d/%s',
-  config.database.username,
-  config.database.password,
-  config.database.host,
-  config.database.port,
-  config.database.database
-);
 
 var token = {
   CHARS: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
@@ -28,43 +20,86 @@ var token = {
   }
 };
 
-var connect = function (callback) {
-  //console.log('connect : ' + url);
-  pg.connect(url, function (err, db) {
+// static module-wide database object
+var db = new sqlite3.Database(config.database);
+
+// initialize database:
+db.serialize(function () {
+  // check if the tables are there, if not initialize
+  var sql = "select name from sqlite_master where type='table' and name='paste'";
+  db.get(sql, function (err, row) {
     if (err) {
-      console.log('ERROR: ' + err);
-      return;
+      console.log('error checking present table paste: ' + err);
+      process.exit();
     }
-    callback(db);
+
+    if (!row) {
+      console.log('[init] create table: paste');
+      db.run('CREATE TABLE paste (' +
+             '    id           TEXT PRIMARY KEY,' +
+             '    secret       TEXT,' +
+             '    summary      TEXT,' +
+             '    content      TEXT,' +
+
+             '    expire       TEXT,' +
+             '    created      TEXT,' +
+
+             '    encrypted    INTEGER,' +
+             '    language     TEXT,' +
+             '    private      INTEGER' +
+             ');');
+    }
   });
+
+});
+
+// open/create sqlite3 database
+var connect = function (callback) {
+  console.log('connect sqlite3 database file...');
+  if (!db) {
+    db = new sqlite3.Database(config.database, function (err) {
+      if (err) {
+        db = null;
+        console.log('error opening database: ' + err);
+        callback(err);
+        return;
+      }
+
+      console.log('return newly opened database,');
+      
+    });
+  }
+  else {
+    console.log('return already open database');
+    callback(null, db);
+  }
 };
 
 var disconnect = function (callback) {
-  pg.end();
+  if (db) {
+    db.close();
+  }
 };
 
 var query = function (query, values, callback) {
   callback = (typeof values == 'function') ? values : callback;
   console.log('execute query: ' + query + ', ' + util.inspect(values));
-  connect(function (db) {
-    db.query(query, values, callback);
-  });
+  db.all(query, values, callback);
 };
 
 // count paste entries with an optional id
 var count = function (table, id, callback) {
   callback = (typeof id == 'function') ? id : callback;
-  connect(function (db) {
-    var where = '', val = [];
-    if (typeof id == 'string') {
-      where = ' where id = $1';
-      val = [ id ];
-    }
-    db.query('select count(*) as num from ' + table + where, val, 
-      function (err, res) {
-        if (err != null) return callback(err);
-        callback(null, res.rows[0].num);
-    });
+  var where = '', val = [];
+  if (typeof id == 'string') {
+    where = ' where id = ?';
+    val = [ id ];
+  }
+  query('select count(*) as num from ' + table + where, val, 
+    function (err, res) {
+      if (err != null) return callback(err);
+      console.log(util.inspect(res));
+      callback(null, res[0].num);
   });
 };
 
@@ -83,7 +118,7 @@ var insert = function (table, map, callback) {
     , placeholder = (function (count) {
         var v = [];
         for (var i = 1; i <= count; i++) {
-          v.push('$' + i);
+          v.push('?');// ('$' + i);
         }
         return v;
       }(values.length)).join(', ');
@@ -96,13 +131,13 @@ var update = function (table, set, where, callback) {
   var num = 1, values = [], setlist = [], wherelist = [];
 
   for (var key in set) {
-    setlist.push(key + ' = $' + num);
+    setlist.push(key + ' = ?'); // $' + num);
     values.push(set[key]);
     num++;
   }
 
   for (var key in where) {
-    wherelist.push(key + ' = $' + num);
+    wherelist.push(key + ' = ?'); // $' + num);
     values.push(where[key]);
     num++;
   }
@@ -121,7 +156,6 @@ var makeid = function (min_length, callback) {
     if (err != null) return callback(err);
     var next = function () {
       id = genid(all);
-      console.log("id.length(" + id.length + ") < " + min_length)
       if (id.length < min_length) {
         id = token.gen(min_length);
       }
@@ -139,12 +173,21 @@ exports.connect = function (callback) {
   return connect(callback);
 };
 exports.get = function (id, callback) {
-  query('select * from paste where id = $1', [id], function (err, res) {
+  query('select * from paste where id = ?', [id], function (err, res) {
     if (err != null) return callback(err);
-    if (res.rows.length == 0) return callback(new Error('paste not found'));
-    if (res.rows[0].expire != null && new Date() > res.rows[0].expire)
+    if (res.length == 0) return callback(new Error('paste not found'));
+    var paste = res[0];
+
+    // convert datetime columns into date objects
+    paste.created = new Date(parseInt(paste.created));
+    if (paste.expire)
+      paste.expire = new Date(parseInt(paste.expire));
+    console.log(util.inspect(paste));
+
+    if (paste.expire != null && new Date() > paste.expire)
       return callback(new Error('paste expired'));
-    callback(null, res.rows[0]);
+
+    callback(null, paste);
   });
 };
 exports.create = function (paste, callback) {
@@ -163,10 +206,10 @@ exports.update = function (paste, callback) {
   update('paste', paste, {id: paste.id, secret: paste.secret}, callback);
 };
 exports.delete = function (id, callback) {
-  query('delete from paste where id = $1', [id], callback);
+  query('delete from paste where id = ?', [id], callback);
 };
 exports.deleteExpired = function (callback) {
-  query('delete from paste where expire is not null and now() > expire',
+  query("delete from paste where expire is not null and date('now') > expire",
     callback);
 };
 exports.disconnect = disconnect;

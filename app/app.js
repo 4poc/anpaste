@@ -5,11 +5,17 @@ var strftime = require('strftime');
 
 var path = require('path');
 var http = require('http');
+var util = require('util');
 
 // Internal modules
 var routes = require('./routes');
 var mid = require('./middlewares.js');
 var store = require('./lib/store.js');
+
+
+store.connect(function (err, db) {
+
+});
 
 
 // Initialisation of express
@@ -20,6 +26,7 @@ var app = express();
 var public_path = path.join(__dirname, './public');
 var config = require('../config.json');
 var brush = require('../brush.json');
+
 
 app.configure(function () {
   // Setup view tempates
@@ -67,7 +74,7 @@ setInterval(function () {
   store.deleteExpired(function (err) {
     if (err != null) console.error(err);
   });
-}, 5 * 60 * 1000);
+}, 10 * 1000);// 5 * 60 * 1000);
 
 
 // setup routes
@@ -83,6 +90,11 @@ app.post('/delete'             , routes.deletePaste);
 
 // Error messages all redirect to create
 app.use(function (err, req, res, next) {
+  console.log('\n');
+  console.log('AN ERROR OCCURED :: ' + req.ip + ' :: ' + req.originalUrl);
+  console.log(' ========================================================= ');
+  console.log(err);
+  console.log('\n');
   res.render('create', {notice: err});
 });
 
