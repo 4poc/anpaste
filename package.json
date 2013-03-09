@@ -1,6 +1,6 @@
 {
   "name": "anpaste",
-  "description": "a simple nodejs pastebin webapp powered by express 3 and postgres database backend",
+  "description": "a simple nodejs pastebin webapp powered by express 3 and sqlite3",
   "author": "apoc <apoc@sixserv.org>",
   "version": "0.0.1",
   "dependencies": {
