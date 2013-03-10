@@ -13,6 +13,10 @@ for (var i = 0; i < brush.length; i++) {
 }
 
 exports.index = function (req, res, next) {
+  res.redirect('/create');
+};
+
+exports.list = function (req, res, next) {
   var page = parseInt(req.query.page, 10) || 1;
 
   var where = 'where (expire is null or expire > ?) and encrypted = 0 and private = 0 order by created desc';
@@ -41,7 +45,7 @@ exports.index = function (req, res, next) {
           return lang_brush[paste.language][0];
       });
       brush_list = _.uniq(brush_list);
-      res.render('index', {num_pages:num_pages, all:all, page:page, brush_list: brush_list, pastes: pastes});
+      res.render('list', {num_pages:num_pages, all:all, page:page, brush_list: brush_list, pastes: pastes});
     });
 
   });

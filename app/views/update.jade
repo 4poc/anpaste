@@ -2,7 +2,7 @@ extends layout
 
 block content
   header
-    ul
+    ul.middot_list
       mixin time(paste)
       if session.secrets && session.secrets[paste.id]
         li

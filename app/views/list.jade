@@ -2,7 +2,7 @@ extends layout
 
 block content
   header
-    ul
+    ul.middot_list
       li.first
         a(href='/create') create new
 
@@ -13,7 +13,7 @@ block content
     each paste in pastes
       li.paste
         .meta
-          ul
+          ul.middot_list
             mixin time(paste)
             if session.secrets && session.secrets[paste.id]
               li
@@ -26,8 +26,7 @@ block content
               | #{paste.summary}
             else
               | ##{paste.id}
-        pre#content(class='brush: #{paste.language}')
-          | #{paste.content}
+        pre#content(class='brush: #{paste.language}') #{paste.content}
 
   .pager
     if page > 1

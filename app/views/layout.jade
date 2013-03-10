@@ -34,6 +34,12 @@ html
     script(type='text/javascript')
       var session_test = #{session.test || false};
 
+    ul.global.middot_list
+      li
+        a(href='/list') public pastes
+      li
+        a.first(href='/about') about
+
     if typeof notice !== 'undefined' && notice
       .notice
         | #{notice}

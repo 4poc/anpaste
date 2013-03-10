@@ -55,6 +55,11 @@ code {
 strong {
   color: #333;
 }
+.global {
+  display: block;
+  text-align: right;
+  font-size: 14px;
+}
 body {
   font-family: arial, sans-serif;
 }
@@ -142,30 +147,26 @@ a {
 a:hover {
   text-decoration: underline;
 }
-header,
-.meta {
-  font-size: 11px;
-  color: #999;
-}
-header ul,
-.meta ul {
+ul.middot_list {
   list-style-type: none;
   padding: 0px;
   margin: 0px;
 }
-header ul li,
-.meta ul li {
+ul.middot_list li {
   display: inline;
 }
-header ul li:before,
-.meta ul li:before {
+ul.middot_list li:before {
   padding: 4px;
   content: "\00b7";
 }
-header ul li.first:before,
-.meta ul li.first:before {
+ul.middot_list li.first:before {
   padding: 0px;
   content: "";
+}
+header,
+.meta {
+  font-size: 11px;
+  color: #999;
 }
 header .urls,
 .meta .urls {

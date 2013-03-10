@@ -63,6 +63,12 @@ strong {
   color: #333;
 }
 
+.global {
+  display: block;
+  text-align: right;
+  font-size: 14px;
+}
+
 body {
   font-family: arial, sans-serif;
 }
@@ -158,28 +164,28 @@ a {
   }
 }
 
+ul.middot_list {
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  li {
+    display: inline;
+    &:before {
+      padding: 4px;
+      content: "\00b7"
+    }
+  }
+  li.first {
+    &:before {
+      padding: 0px;
+      content: "";
+    }
+  }
+}
+
 header, .meta {
   font-size: 11px;
   color: #999;
-
-  ul {
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-    li {
-      display: inline;
-      &:before {
-        padding: 4px;
-        content: "\00b7"
-      }
-    }
-    li.first {
-      &:before {
-        padding: 0px;
-        content: "";
-      }
-    }
-  }
   
   .urls {
     line-height: 12px;

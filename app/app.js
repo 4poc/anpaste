@@ -84,6 +84,7 @@ setInterval(function () {
 
 // setup routes
 app.get ('/'                   , routes.index);
+app.get ('/list'               , routes.list);
 app.get ('/create'             , routes.createPasteForm);
 app.post('/create'             , routes.createPaste);
 app.get ('/:id.:format?/:file?', routes.readPaste);
