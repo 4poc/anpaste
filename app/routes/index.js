@@ -114,7 +114,7 @@ exports.createPaste = function (req, res, next) {
     console.log('new paste created, id: ' + paste.id);
 
     if (req.body.announce == 'true') {
-      var url = 'http://' + req.headers.host + '/' + paste.id;
+      var url = req.protocol + '://' + req.headers.host + '/' + paste.id;
       var message = 'new paste submitted :: ' + url;
       if (paste.summary != '') {
         message += ' :: ' + paste.summary;
