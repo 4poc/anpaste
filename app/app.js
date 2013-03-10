@@ -79,7 +79,7 @@ setInterval(function () {
   store.deleteExpired(function (err) {
     if (err != null) console.error(err);
   });
-}, 5 * 60 * 1000);
+}, 15 * 60 * 1000);
 
 
 // setup routes

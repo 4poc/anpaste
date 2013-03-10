@@ -106,13 +106,13 @@ var disconnect = function (callback) {
 
 var query = function (query, values, callback) {
   callback = (typeof values == 'function') ? values : callback;
-  console.log('execute query: ' + query + ', ' + util.inspect(values));
+  // console.log('execute query: ' + query + ', ' + util.inspect(values));
   db.all(query, values, callback);
 };
 
 var run = function (query, values, callback) {
   callback = (typeof values == 'function') ? values : callback;
-  console.log('run query: ' + query + ', ' + util.inspect(values));
+  // console.log('run query: ' + query + ', ' + util.inspect(values));
   db.run(query, values, callback);
 };
 

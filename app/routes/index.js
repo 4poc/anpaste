@@ -36,12 +36,10 @@ exports.index = function (req, res, next) {
         var content = paste.content.split('\n');
         paste.content = content.slice(0, config.index.max_lines).join('\n');
       });
-      console.log(util.inspect(pastes));
       var brush_list = _.map(pastes, function (paste) {
         if (lang_brush[paste.language])
           return lang_brush[paste.language][0];
       });
-      console.log(util.inspect(brush_list));
       brush_list = _.uniq(brush_list);
       res.render('index', {num_pages:num_pages, all:all, page:page, brush_list: brush_list, pastes: pastes});
     });
