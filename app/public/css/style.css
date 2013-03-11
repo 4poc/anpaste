@@ -158,7 +158,7 @@ ul.middot_list li {
   display: inline;
 }
 ul.middot_list li:before {
-  padding: 4px;
+  padding: 0px 4px 0px 0px;
   content: "\00b7";
 }
 ul.middot_list li.first:before {
