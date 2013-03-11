@@ -30,7 +30,7 @@ block content
 
   .pager
     if page > 1
-      a.previous(href='/?page=#{page-1}') &laquo; previous page
+      a.previous(href='/list?page=#{page-1}') &laquo; previous page
     if page < num_pages
-      a.next(href='/?page=#{page+1}') next page &raquo;
+      a.next(href='/list?page=#{page+1}') next page &raquo;
 

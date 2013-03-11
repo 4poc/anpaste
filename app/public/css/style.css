@@ -198,6 +198,12 @@ ul.paste_list h3 {
 ul.paste_list .syntaxhighlighter {
   margin: 2px 5px 5px 5px !important;
 }
+.pager {
+  font-size: 12px;
+}
+.pager .previous {
+  padding-right: 10px;
+}
 footer {
   border-top: 1px solid #e7e7e7;
   margin-top: 12px;

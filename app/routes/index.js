@@ -27,8 +27,8 @@ exports.list = function (req, res, next) {
   store.query('select count(*) as num from paste '+where, [now], function (err, rows) {
     if (err != null) return next(err);
     var all = rows[0].num;
-    var num_pages = Math.floor(all / config.index.per_page);
-    var start = num_pages * (page-1);
+    var num_pages = Math.ceil(all / config.index.per_page);
+    var start = (page-1) * config.index.per_page;
 
     store.query('select * from paste '+where+' limit '+start+','+config.index.per_page, [now], function (err, pastes) {
       if (err != null) return next(err);
