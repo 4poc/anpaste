@@ -28,6 +28,7 @@ app.configure(function () {
   // Setup view tempates
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+  app.locals.pretty = true;
 
   app.use(express.favicon());
   app.use(express.logger('dev'));
@@ -92,6 +93,7 @@ app.get ('/update/:id/:secret' , routes.updatePasteForm);
 app.post('/update'             , routes.updatePaste);
 app.get ('/delete/:id/:secret' , routes.deletePasteForm);
 app.post('/delete'             , routes.deletePaste);
+app.get ('/about'              , routes.about);
 app.get ('*'                   , routes.notFound);
 
 

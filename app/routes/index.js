@@ -201,6 +201,11 @@ exports.deletePaste = function (req, res, next) {
 };
 
 
+exports.about = function (req, res, next) {
+  res.render('about');
+};
+
+
 exports.notFound = function (req, res, next) {
   res.status(404);
   res.render('not_found');
