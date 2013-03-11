@@ -206,6 +206,18 @@ exports.deletePaste = function (req, res, next) {
 };
 
 
+exports.settings = function (req, res, next) {
+  if (req.body.show_line_numbers === 'true')
+    req.session.show_line_numbers = true;
+  if (req.body.show_line_numbers === 'false')
+    req.session.show_line_numbers = false;
+  if (_.contains(config.themes, req.body.show_theme))
+    req.session.show_theme = req.body.show_theme;
+
+  res.send({status: 'ok'});
+};
+
+
 exports.about = function (req, res, next) {
   res.render('about');
 };

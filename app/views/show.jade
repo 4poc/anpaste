@@ -31,5 +31,12 @@ block content
     pre#content(class='brush: #{paste.language}')
 
   footer
+    .options.hidden
+      select#show_theme(name='show_theme')
+        each value in config.themes
+          option(value=value, selected=session.show_theme==value?true:false) #{value.toLowerCase()}
+
+      input#show_line_numbers(type='checkbox', name='show_line_numbers', value='true', checked=session.show_line_numbers?true:false)
+      label(for='show_line_numbers') show line numbers
 
 

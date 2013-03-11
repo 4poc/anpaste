@@ -69,6 +69,12 @@ app.configure(function () {
     res.locals.strftime = strftime;
     res.locals.session = req.session;
 
+    // set session default values:
+    if (typeof req.session.show_line_numbers === 'undefined')
+      req.session.show_line_numbers = false;
+    if (typeof req.session.show_theme === 'undefined')
+      req.session.show_theme = 'Default';
+
     next();
   });
 });
@@ -93,6 +99,7 @@ app.get ('/update/:id/:secret' , routes.updatePasteForm);
 app.post('/update'             , routes.updatePaste);
 app.get ('/delete/:id/:secret' , routes.deletePasteForm);
 app.post('/delete'             , routes.deletePaste);
+app.post('/settings'           , routes.settings);
 app.get ('/about'              , routes.about);
 app.get ('*'                   , routes.notFound);
 

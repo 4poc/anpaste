@@ -168,8 +168,6 @@ $(function () {
   }
 
   SyntaxHighlighter.all();
-  SyntaxHighlighter.defaults.toolbar = false;
-  SyntaxHighlighter.defaults.gutter = false;
 
   //
   // Append the password in urls:
@@ -217,5 +215,26 @@ $(function () {
     else
       $('div > #encrypted').removeAttr('disabled');
   });
+
+
+  //
+  // Change show settings (line numbers and theme) send POST /settings,
+  // then reload page.
+  //
+  $('.options').removeClass('hidden');
+  $('#show_theme').change(function (event) {
+    post_show_settings({show_theme: $(this).val()});
+  });
+  $('#show_line_numbers').change(function (event) {
+    post_show_settings({show_line_numbers: $(this).is(':checked')});
+  });
+  function post_show_settings(data) {
+    $.post('/settings', data, function (data) {
+      location.reload(true);
+    });
+  }
+
+
+
 
 });

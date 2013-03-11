@@ -63,14 +63,16 @@ strong {
 body {
   font-family: arial, sans-serif;
 }
-label,
-p {
+label {
   letter-spacing: 1px;
   font-size: 11px;
 }
 header,
 footer {
   font-size: 12px;
+}
+p {
+  font-size: 14px;
 }
 form {
   padding: 5px 5px 5px 1px;
@@ -108,35 +110,35 @@ form textarea {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
-form .options {
+.options {
   display: block;
   padding-left: 1px;
 }
-form .options h2 {
+.options h2 {
   width: 250px;
 }
-form .options .selects {
+.options .selects {
   width: 350px;
 }
-form .options .selects div {
+.options .selects div {
   display: inline-block;
   padding: 0px 0px 6px 6px;
 }
-form .options label.inline {
+.options label.inline {
   display: inline !important;
 }
-form .options .left {
+.options .left {
   padding-right: 15px;
   display: inline;
   float: left;
 }
-form .options .submit {
+.options .submit {
   padding-top: 4px;
   display: block;
   text-align: right;
   float: right;
 }
-form .options .shift {
+.options .shift {
   font-size: 10px;
   font-style: italic;
 }
