@@ -45,7 +45,7 @@ block content
                 option(value=lang[1], selected=paste.language==lang[1]?true:false) #{lang[2]}
 
         div.hidden
-          input#tabkeys(type='checkbox', name='tabkeys', value='true')
+          input#tabkeys(type='checkbox', name='tabkeys', value='true', checked=session.tabkeys)
           label.inline(for='tabkeys') tab-keys inserts tabstops
 
       div.submit

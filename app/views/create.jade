@@ -35,7 +35,7 @@ block content
               option(value='#{31 * 24 * 60 * 60}') one month
 
         div.hidden
-          input#tabkeys(type='checkbox', name='tabkeys', value='true')
+          input#tabkeys(type='checkbox', name='tabkeys', value='true', checked=session.tabkeys)
           label.inline(for='tabkeys') tab-keys inserts tabstops
 
         div.hidden

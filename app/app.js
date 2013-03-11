@@ -74,6 +74,8 @@ app.configure(function () {
       req.session.show_line_numbers = false;
     if (typeof req.session.show_theme === 'undefined')
       req.session.show_theme = 'Default';
+    if (typeof req.session.tabkeys === 'undefined')
+      req.session.tabkeys = false;
 
     next();
   });

@@ -223,14 +223,19 @@ $(function () {
   //
   $('.options').removeClass('hidden');
   $('#show_theme').change(function (event) {
-    post_show_settings({show_theme: $(this).val()});
+    post_settings({show_theme: $(this).val()});
   });
   $('#show_line_numbers').change(function (event) {
-    post_show_settings({show_line_numbers: $(this).is(':checked')});
+    post_settings({show_line_numbers: $(this).is(':checked')});
   });
-  function post_show_settings(data) {
+  $('#tabkeys').change(function (event) {
+    post_settings({tabkeys: $(this).is(':checked')}, false);
+  });
+  function post_settings(data, reload) {
+    reload = typeof reload === 'undefined' ? true : reload;
     $.post('/settings', data, function (data) {
-      location.reload(true);
+      if (reload)
+        location.reload(true);
     });
   }
 

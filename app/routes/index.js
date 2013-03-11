@@ -213,6 +213,10 @@ exports.settings = function (req, res, next) {
     req.session.show_line_numbers = false;
   if (_.contains(config.themes, req.body.show_theme))
     req.session.show_theme = req.body.show_theme;
+  if (req.body.tabkeys === 'true')
+    req.session.tabkeys = true;
+  if (req.body.tabkeys === 'false')
+    req.session.tabkeys = false;
 
   res.send({status: 'ok'});
 };
