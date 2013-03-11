@@ -89,7 +89,7 @@ $(function () {
     $.post('/create', data, function (data) {
       submit.removeAttr('disabled');
       if (session_test) {
-        window.location = url(['/' + data.id], password);
+        window.location = url([data.id], password);
       }
       else {
         window.location = url(['/update', data.id, data.secret], password);

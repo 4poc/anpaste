@@ -4,6 +4,11 @@ block content
   header
     ul.middot_list
       mixin time(paste)
+      if !paste.encrypted
+        li
+          a(href=url([paste.id + '.raw'])) raw
+        li
+          a(href=url([paste.id + '/paste_#{paste.id}.txt'])) download
       if session.secrets && session.secrets[paste.id]
         li
           a.paste_link(href=url(['update', paste.id, session.secrets[paste.id]])) update
