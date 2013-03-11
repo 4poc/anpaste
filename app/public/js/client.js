@@ -3,7 +3,7 @@ $(function () {
   $(".easydate").easydate();
 
   $('div > #encrypted').parent().removeClass('hidden');
-  $('div > #tabkeys').parent().removeClass('hidden');
+  $('div > #option_tabkeys').parent().removeClass('hidden');
 
   function encrypt(password, content) {
     return sjcl.encrypt(password, content);
@@ -35,7 +35,7 @@ $(function () {
     }
   };
 
-  $('#tabkeys').change(function (event) {
+  $('#option_tabkeys').change(function (event) {
     var content = $('textarea[name="content"]')[0];
     if ($(this).is(':checked')) {
       tabIndent.render(content);
@@ -228,8 +228,8 @@ $(function () {
   $('#show_line_numbers').change(function (event) {
     post_settings({show_line_numbers: $(this).is(':checked')});
   });
-  $('#tabkeys').change(function (event) {
-    post_settings({tabkeys: $(this).is(':checked')}, false);
+  $('#option_tabkeys').change(function (event) {
+    post_settings({option_tabkeys: $(this).is(':checked')}, false);
   });
   function post_settings(data, reload) {
     reload = typeof reload === 'undefined' ? true : reload;

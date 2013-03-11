@@ -207,16 +207,14 @@ exports.deletePaste = function (req, res, next) {
 
 
 exports.settings = function (req, res, next) {
-  if (req.body.show_line_numbers === 'true')
-    req.session.show_line_numbers = true;
-  if (req.body.show_line_numbers === 'false')
-    req.session.show_line_numbers = false;
+  if (!_.isUndefined(req.body.show_line_numbers))
+    req.session.show_line_numbers = req.body.show_line_numbers==='true';
+
   if (_.contains(config.themes, req.body.show_theme))
     req.session.show_theme = req.body.show_theme;
-  if (req.body.tabkeys === 'true')
-    req.session.tabkeys = true;
-  if (req.body.tabkeys === 'false')
-    req.session.tabkeys = false;
+
+  if (!_.isUndefined(req.body.option_tabkeys))
+    req.session.option_tabkeys = req.body.option_tabkeys==='true';
 
   res.send({status: 'ok'});
 };

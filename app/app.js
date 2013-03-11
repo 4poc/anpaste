@@ -2,6 +2,7 @@
 // Module dependencies
 var express = require('express');
 var strftime = require('strftime');
+var _ = require('underscore');
 
 var path = require('path');
 var http = require('http');
@@ -70,12 +71,7 @@ app.configure(function () {
     res.locals.session = req.session;
 
     // set session default values:
-    if (typeof req.session.show_line_numbers === 'undefined')
-      req.session.show_line_numbers = false;
-    if (typeof req.session.show_theme === 'undefined')
-      req.session.show_theme = 'Default';
-    if (typeof req.session.tabkeys === 'undefined')
-      req.session.tabkeys = false;
+    _.defaults(req.session, config.session.defaults);
 
     next();
   });

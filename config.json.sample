@@ -11,5 +11,26 @@
     "host": "<host>",
     "port": "7272",
     "password": "<pw>"
-  }
+  },
+  "session": {
+    "secret": "um4aeShxainopie_ZooquuHaiNg7ooc4iuch1aish7poh3jei1OoQu0eng%icain",
+    "maxAge": 86400000000,
+    "defaults": {
+      "show_line_numbers": false,
+      "show_theme": "Default",
+      "option_tabkeys": false,
+      "option_language": "plain",
+      "option_expire": 0,
+      "option_encryption": false,
+      "option_private": false,
+      "option_announce": false
+    }
+  },
+  "index": {
+    "max_lines": 40,
+    "per_page": 2
+  },
+  "themes": [
+    "Default", "Midnight", "Django", "Eclipse", "Emacs", "FadeToGrey", "MDUltra", "RDark"
+  ]
 }
