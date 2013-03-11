@@ -41,8 +41,11 @@ exports.list = function (req, res, next) {
         paste.content = content.slice(0, config.index.max_lines).join('\n');
       });
       var brush_list = _.map(pastes, function (paste) {
-        if (lang_brush[paste.language])
-          return lang_brush[paste.language][0];
+        if (!lang_brush[paste.language])
+          paste.language = 'plain';
+
+        paste.language_caption = lang_brush[paste.language][2];
+        return lang_brush[paste.language][0];
       });
       brush_list = _.uniq(brush_list);
       res.render('list', {num_pages:num_pages, all:all, page:page, brush_list: brush_list, pastes: pastes});
@@ -69,6 +72,7 @@ exports.readPaste = function (req, res, next) {
         brush_list = [lang_brush[paste.language][0]];
       else
         paste.language = 'plain';
+      paste.language_caption = lang_brush[paste.language][2];
 
       res.render('show', {brush_list: brush_list, paste: paste});
     }

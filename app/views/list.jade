@@ -10,6 +10,8 @@ block content
         .meta
           ul.middot_list
             mixin time(paste)
+            if paste.language != 'plain'
+              li #{paste.language_caption}
             if session.secrets && session.secrets[paste.id]
               li
                 a(href=url(['update', paste.id, session.secrets[paste.id]])) update

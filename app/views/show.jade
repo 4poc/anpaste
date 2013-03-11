@@ -5,7 +5,7 @@ block content
     ul.middot_list
       mixin time(paste)
       if paste.language != 'plain'
-        li #{paste.language}
+        li #{paste.language_caption}
       if !paste.encrypted
         li
           a(href=url([paste.id + '.raw'])) raw
