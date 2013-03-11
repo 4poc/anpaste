@@ -21,7 +21,6 @@
       "option_tabkeys": false,
       "option_language": "plain",
       "option_expire": 0,
-      "option_encryption": false,
       "option_private": false,
       "option_announce": false
     }
@@ -32,5 +31,12 @@
   },
   "themes": [
     "Default", "Midnight", "Django", "Eclipse", "Emacs", "FadeToGrey", "MDUltra", "RDark"
-  ]
+  ],
+  "expire": {
+    "never": 0,
+    "half an hour": 1800,
+    "one day": 86400,
+    "a week": 604800,
+    "one month": 2678400
+  }
 }

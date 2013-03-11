@@ -99,8 +99,8 @@ exports.createPaste = function (req, res, next) {
     summary: req.body.summary,
     content: req.body.content,
     expire: null,
-    encrypted: req.body.encrypted === 'true' ? true : false,
-    private: req.body.private === 'true' ? true : false,
+    encrypted: req.body.encrypted === 'true',
+    private: req.body.private === 'true',
     language: req.body.language
   };
   if (req.body.expire != '0') {
@@ -108,6 +108,12 @@ exports.createPaste = function (req, res, next) {
     paste.expire = exp.getTime() + parseInt(req.body.expire, 10) * 1000;
   }
 
+  _.extend(req.session, {
+    option_language: paste.language,
+    option_expire: req.body.expire,
+    option_private: paste.private,
+    option_announce: req.body.announce
+  });
   store.create(paste, function (err, paste) {
     if (err != null) return next(err);
 
@@ -162,6 +168,9 @@ exports.updatePaste = function (req, res, next) {
     language: req.body.language
   };
 
+  _.extend(req.session, {
+    option_language: paste.language
+  });
   store.get(paste.id, function (err, _paste) {
     if (err != null) return next(err);
     if (_paste.secret !== paste.secret) return next(new Error('wrong secret'));

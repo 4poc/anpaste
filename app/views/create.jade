@@ -23,16 +23,13 @@ block content
             label(for='language') language
             select#language(name='language')
               each lang in brush
-                option(value=lang[1]) #{lang[2]}
+                option(value=lang[1], selected=session.option_language==lang[1]?true:false) #{lang[2]}
 
           div
             label(for='expire') expire
             select#expire(name='expire')
-              option(value='0') never
-              option(value='#{30 * 60}') half an hour
-              option(value='#{24 * 60 * 60}') one day
-              option(value='#{7 * 24 * 60 * 60}') a week
-              option(value='#{31 * 24 * 60 * 60}') one month
+              each value, caption in config.expire
+                option(value=value, selected=session.option_expire==value?true:false) #{caption}
 
         div.hidden
           input#option_tabkeys(type='checkbox', name='option_tabkeys', value='true', checked=session.option_tabkeys)
@@ -43,11 +40,11 @@ block content
           label.inline(for='encrypted') (client-side) encryption
 
         div
-          input#private(type='checkbox', name='private', value='true')
+          input#private(type='checkbox', name='private', value='true', checked=session.option_private?true:false)
           label.inline(for='private') paste private
 
         div
-          input#announce(type='checkbox', name='announce', value='true')
+          input#announce(type='checkbox', name='announce', value='true', checked=session.option_announce?true:false)
           label.inline(for='announce') announce in #woot
 
       div.submit
