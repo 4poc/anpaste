@@ -11,7 +11,7 @@ block content
         a(href='/create') create new
 
   h1
-    a.permalink(href='/#{paste.id}')
+    a.paste_link.permalink(href='/#{paste.id}')
       if paste.summary != ''
         | update: #{paste.summary}
       else

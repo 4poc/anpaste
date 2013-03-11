@@ -6,14 +6,12 @@ block content
       mixin time(paste)
       if session.secrets && session.secrets[paste.id]
         li
-          a(href=url(['update', paste.id, session.secrets[paste.id]])) update
+          a.paste_link(href=url(['update', paste.id, session.secrets[paste.id]])) update
         li
-          a(href=url(['delete', paste.id, session.secrets[paste.id]])) delete
-      li
-        a(href='/create') create new
+          a.paste_link(href=url(['delete', paste.id, session.secrets[paste.id]])) delete
 
   h1
-    a.permalink(href='/#{paste.id}')
+    a.paste_link.permalink(href='/#{paste.id}')
       if paste.summary != ''
         | #{paste.summary}
       else

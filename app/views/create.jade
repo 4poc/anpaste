@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1
-    a(href='/') create new
+    a(href='/') new paste
 
   // create form with settings
   form(method='POST', action='/create')
@@ -53,6 +53,6 @@ block content
       div.submit
 
         .shift press shift-enter to submit
-        input(type='submit', name='create', value='create')
+        input(type='submit', name='create', value='submit')
 
 

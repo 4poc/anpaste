@@ -88,8 +88,12 @@ $(function () {
 
     $.post('/create', data, function (data) {
       submit.removeAttr('disabled');
-
-      window.location = url(['/update', data.id, data.secret], password);
+      if (session_test) {
+        window.location = url(['/' + data.id], password);
+      }
+      else {
+        window.location = url(['/update', data.id, data.secret], password);
+      }
     });
 
   });
@@ -162,12 +166,11 @@ $(function () {
   //
   // Append the password in urls:
   //
-  var urls = $('.urls div');
-  if (urls.length > 0 && $('input[name="encrypted"]').val() == 'true') {
+  var urls = $('a.paste_link');
+  if (urls.length > 0 && location.hash.length > 1) {
     var password = location.hash; // .substring(1); that includes #
     for (var i = 0; i < urls.length; i++) {
-      var link = $('a', urls[i]);
-      link.append(password);
+      var link = $(urls[i]);
       link.attr('href', link.attr('href') + password);
     }
   }
