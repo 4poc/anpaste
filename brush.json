@@ -15,6 +15,7 @@
 ["shBrushErlang.js", "erlang", "erlang"],
 ["shBrushCSharp.js", "csharp", "c#"],
 ["shBrushObjectiveC.js", "objectivec", "objective c"],
+["shBrushVimscript.js", "vim", "vim"],
 ["shBrushBash.js", "bash", "bash"],
 ["shBrushXml.js", "xml", "xml"],
 ["shBrushYaml.js", "yaml", "yaml"],
