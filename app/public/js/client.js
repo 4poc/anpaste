@@ -114,6 +114,9 @@ $(function () {
     if (password) {
       content = encrypt(password, content);
     }
+    else {
+      return;
+    }
 
     var data = {
       id: id,
@@ -127,7 +130,12 @@ $(function () {
 
     $.post('/update', data, function (data) {
       submit.removeAttr('disabled');
-      window.location = url(['/update', data.id, data.secret], password);
+      if (session_test) {
+        window.location = url([data.id], password);
+      }
+      else {
+        window.location = url(['/update', data.id, data.secret], password);
+      }
     });
 
     event.preventDefault();

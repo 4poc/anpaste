@@ -171,7 +171,12 @@ exports.updatePaste = function (req, res, next) {
         res.send({id: paste.id, secret: paste.secret});
       }
       else {
-        res.redirect(res.locals.url(['update', paste.id, paste.secret]));
+        if (req.session.test) {
+          res.redirect(res.locals.url([paste.id]));
+        }
+        else {
+          res.redirect(res.locals.url(['update', paste.id, paste.secret]));
+        }
       }
     });
   });
