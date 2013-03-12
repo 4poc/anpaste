@@ -31,7 +31,6 @@ app.configure(function () {
   app.set('view engine', 'jade');
   app.locals.pretty = true;
 
-  app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
