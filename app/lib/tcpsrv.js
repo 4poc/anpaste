@@ -1,11 +1,12 @@
 
 var net = require('net');
+var _ = require('underscore');
 
 var store = require('./store.js');
 var config = require('../../config.json');
 
 exports.create = function () {
-  var server = net.createServer(function (conn) {
+  var handler = function (conn) {
     console.log('tcpsrv new client connection ' + conn.remoteAddress);
 
     conn.setKeepAlive(true);
@@ -35,11 +36,14 @@ exports.create = function () {
         }
       });
     });
-  });
+  };
 
-  server.listen(config.tcpsrv.port, function () {
-    var addy = server.address();
-    console.log('tcpsrv server listening ' + addy.family + '/' + addy.address + ':' + addy.port);
+  _.each(config.tcpsrv.bind, function (host) {
+    var server = net.createServer(handler);
+    server.listen(config.tcpsrv.port, host, function () {
+      var addy = server.address();
+      console.log('tcpsrv server listening ' + addy.family + '/' + addy.address + ':' + addy.port);
+    });
   });
 };
 
