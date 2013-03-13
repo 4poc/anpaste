@@ -12,6 +12,7 @@ var util = require('util');
 var routes = require('./routes');
 var mid = require('./middlewares.js');
 var store = require('./lib/store.js');
+var tcpsrv = require('./lib/tcpsrv.js');
 
 var ConnectStore = require('./lib/connect-store.js')(express);
 
@@ -34,7 +35,6 @@ app.configure(function () {
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-
 
   app.use(express.cookieParser());
   app.use(express.session({
@@ -116,5 +116,8 @@ app.use(function (err, req, res, next) {
 http.createServer(app).listen(config.server.port, config.server.bind, function() {
   console.log('Express server listening on port ' + config.server.port);
 });
+
+// start the TCP server, for netcat/telnet posting;)
+tcpsrv.create();
 
 

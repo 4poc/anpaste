@@ -220,6 +220,24 @@ exports.get = function (id, callback) {
     callback(null, paste);
   });
 };
+exports.createId = function (min_length, callback) {
+  makeid(min_length, function (err, id) {
+    callback(err, id);
+  });
+};
+exports.createWithId = function (id, content, callback) {
+  var paste = {
+    id: id,
+    private: true,
+    secret: token.gen(16, true),
+    created: new Date().getTime(),
+    content: content
+  };
+  insert('paste', paste, function (err, res) {
+    if (err != null) return callback(err);
+    callback(null, paste);
+  });
+};
 exports.create = function (paste, callback) {
   makeid(paste.private ? 16 : 1, function (err, id) {
     if (err != null) return callback(err);
