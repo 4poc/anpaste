@@ -1,0 +1,107 @@
+/**
+ * Theme by Expertduck
+ */
+
+.syntaxhighlighter {
+  background-color: #3f3f3f !important;
+}
+
+.syntaxhighlighter .lines{
+	clear:both;
+}
+.syntaxhighlighter .line.alt1 {
+  background-color: #3f3f3f !important;
+}
+.syntaxhighlighter .line.alt2 {
+  background-color: #3f3f3f !important;
+}
+.syntaxhighlighter .line.highlighted.alt1, .syntaxhighlighter .line.highlighted.alt2 {
+  background-color: #253e5a !important;
+}
+.syntaxhighlighter .line code.number,
+.syntaxhighlighter .line.highlighted.number{
+  color: #888 !important;
+  background:#0c0c0c !important;
+}
+.syntaxhighlighter table caption {
+  color: #d1edff !important;
+}
+.syntaxhighlighter .gutter {
+  color: #afafaf !important;
+}
+.syntaxhighlighter .gutter .line {
+  border-right: 3px solid #435a5f !important;
+}
+.syntaxhighlighter .gutter .line.highlighted {
+  background-color: #435a5f !important;
+  color: #0f192a !important;
+}
+.syntaxhighlighter.printing .line .content {
+  border: none !important;
+}
+.syntaxhighlighter.collapsed {
+  overflow: visible !important;
+}
+.syntaxhighlighter.collapsed .toolbar {
+  color: #428bdd !important;
+  background: black !important;
+  border: 1px solid #435a5f !important;
+}
+
+.syntaxhighlighter .toolbar {
+  color: #d1edff !important;
+  background: #000 !important;
+  border: none !important;
+  width: auto !important;
+}
+.syntaxhighlighter .toolbar a {
+  color: #eee !important;
+  margin:0 5px !important;
+  float:left !important;
+}
+.syntaxhighlighter .toolbar a:hover {
+  color: #8aa6c1 !important;
+}
+.syntaxhighlighter .plain, .syntaxhighlighter .plain a {
+  color: #ccc !important;
+}
+.syntaxhighlighter .comments, .syntaxhighlighter .comments a {
+  color: #7f9f7f !important;
+}
+.syntaxhighlighter .string, .syntaxhighlighter .string a {
+  color: #cc9393 !important;
+}
+.syntaxhighlighter .color3, .syntaxhighlighter .color3 a ,
+.syntaxhighlighter .functions,
+.syntaxhighlighter .keyword {
+  color: #dfc47d !important;
+  font-weight:bold !important;
+  
+}
+.syntaxhighlighter .preprocessor {
+  color: #8aa6c1 !important;
+}
+.syntaxhighlighter .variable {
+  color: #cedf99 !important;
+    font-weight:bold !important;
+}
+.syntaxhighlighter .color1, .syntaxhighlighter .color1 a ,
+.syntaxhighlighter .value {
+  color: #8cd0d3 !important;
+  font-weight:bold !important;
+}
+
+.syntaxhighlighter .constants {
+  color: #e0e8ff !important;
+  font-weight:bold !important;
+}
+.syntaxhighlighter .script {
+  font-weight: bold !important;
+  color: #b43d3d !important;
+  background-color: none !important;
+}
+
+.syntaxhighlighter .color2, .syntaxhighlighter .color2 a {
+  color: white !important;
+}
+

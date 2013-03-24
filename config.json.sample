@@ -30,7 +30,7 @@
     "per_page": 2
   },
   "themes": [
-    "Default", "Midnight", "Django", "Eclipse", "Emacs", "FadeToGrey", "MDUltra", "RDark"
+    "Default", "Midnight", "Django", "Eclipse", "Emacs", "FadeToGrey", "MDUltra", "RDark", "Zenburn"
   ],
   "expire": {
     "never": 0,
