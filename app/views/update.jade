@@ -26,7 +26,7 @@ block content
     input(type='text', name='summary', value='#{paste.summary || ''}')
 
     if paste.encrypted
-      #encrypted-data #{paste.content}
+      #encrypted-data #{paste.getContent()}
 
     label(for='content') content
     textarea(name='content', autofocus=true) #{paste.encrypted ? '' : paste.content}

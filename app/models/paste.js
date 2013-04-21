@@ -239,8 +239,14 @@ Paste.prototype.getLanguageCaption = function () {
     return 'plain';
 };
 
+Paste.prototype.getContent = function () {
+  var content = this.content.replace('\r\n', '\n');
+
+  return content;
+};
+
 Paste.prototype.getExcerpt = function () {
-  var content = this.content.split('\n'), post = '';
+  var content = this.getContent().split('\n'), post = '';
 
   if (content.length > config.index.max_lines)
     post = '\n...';

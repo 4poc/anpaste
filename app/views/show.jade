@@ -25,10 +25,10 @@ block content
         | #{domain}/#{paste.id}
 
   if paste.encrypted
-    #encrypted-data #{paste.content}
+    #encrypted-data #{paste.getContent()}
 
   if !paste.encrypted
-    pre#content(class='brush: #{paste.language}') #{paste.content}
+    pre#content(class='brush: #{paste.language}') #{paste.getContent()}
   else
     pre#content(class='brush: #{paste.language}')
 
