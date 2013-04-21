@@ -19,7 +19,7 @@ block content
                 a(href=url(['delete', paste.id, session.secrets[paste.id]])) delete
         h3 
           a(href='/#{paste.id}')
-            if paste.summary != ''
+            if paste.summary && paste.summary != ''
               | #{paste.summary}
             else
               | ##{paste.id}
