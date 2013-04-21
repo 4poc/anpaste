@@ -29,7 +29,7 @@ block content
       #encrypted-data #{paste.getContent()}
 
     label(for='content') content
-    textarea(name='content', autofocus=true) #{paste.encrypted ? '' : paste.content}
+    textarea(name='content', autofocus=true) #{paste.encrypted ? '' : paste.getContent()}
 
     .options
 

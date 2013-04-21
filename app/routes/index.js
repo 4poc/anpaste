@@ -43,7 +43,7 @@ exports.readPaste = function (req, res, next) {
     }
     else if (format == 'raw') {
       res.set('Content-Type', 'text/plain; charset=utf-8; charset=utf-8');
-      res.send(paste.content);
+      res.send(paste.getContent());
     }
   });
 };
