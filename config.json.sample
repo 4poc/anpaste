@@ -32,6 +32,9 @@
     "max_lines": 40,
     "per_page": 2
   },
+  "api": {
+    "max": 10
+  },
   "themes": [
     "Default", "Midnight", "Django", "Eclipse", "Emacs", "FadeToGrey", "MDUltra", "RDark", "Zenburn"
   ],

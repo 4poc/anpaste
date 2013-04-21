@@ -10,6 +10,7 @@ var util = require('util');
 
 // Internal modules
 var routes = require('./routes');
+var api = require('./routes/api');
 var mid = require('./middlewares.js');
 var store = require('./lib/store.js');
 var tcpsrv = require('./lib/tcpsrv.js');
@@ -98,8 +99,15 @@ app.get ('/delete/:id/:secret' , routes.deletePasteForm);
 app.post('/delete'             , routes.deletePaste);
 app.post('/settings'           , routes.settings);
 app.get ('/about'              , routes.about);
-app.get ('*'                   , routes.notFound);
 
+// setup REST API routes
+app.get ('/api/1/paste'        , api.list);
+app.get ('/api/1/paste/:id'    , api.readPaste);
+app.post('/api/1/paste'        , api.createPaste);
+app.put ('/api/1/paste/:id'    , api.updatePaste);
+app.delete('/api/1/paste/:id'  , api.deletePaste);
+
+app.get ('*'                   , routes.notFound);
 
 // Error messages all redirect to create
 app.use(function (err, req, res, next) {
