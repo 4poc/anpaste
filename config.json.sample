@@ -1,4 +1,5 @@
 {
+  "debug": true,
   "ftime": "%d %B %Y %H:%M:%S",
   "database": "anpaste.sqlite",
   "server": {

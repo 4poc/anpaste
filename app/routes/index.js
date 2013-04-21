@@ -6,11 +6,7 @@ var store = require('../lib/store.js');
 var announce = require('../lib/announce.js').announce;
 var config = require('../../config.json');
 
-var brush = require('../../brush.json');
-var lang_brush = {};
-for (var i = 0; i < brush.length; i++) {
-  lang_brush[brush[i][1]] = brush[i];
-}
+var Paste = require('../models/paste.js').Paste;
 
 exports.index = function (req, res, next) {
   res.redirect('/create');
@@ -18,48 +14,25 @@ exports.index = function (req, res, next) {
 
 exports.list = function (req, res, next) {
   var page = parseInt(req.query.page, 10) || 1;
+  Paste.page(page, function (err, pastes, pages) {
+      if (err) return next(err);
 
-  var where = 'where (expire is null or expire > ?) and encrypted = 0 and private = 0 order by created desc';
-
-  var now = new Date().getTime();
-
-  // count all
-  store.query('select count(*) as num from paste '+where, [now], function (err, rows) {
-    if (err != null) return next(err);
-    var all = rows[0].num;
-    var num_pages = Math.ceil(all / config.index.per_page);
-    var start = (page-1) * config.index.per_page;
-
-    store.query('select * from paste '+where+' limit '+start+','+config.index.per_page, [now], function (err, pastes) {
-      if (err != null) return next(err);
+      // create a uniq list of brushes used in the resulting pastes
+      var brushes = [];
       _.each(pastes, function (paste) {
-        paste.created = new Date(parseInt(paste.created, 10));
-        if (paste.expire)
-          paste.expire = new Date(parseInt(paste.expire, 10));
-
-        var content = paste.content.split('\n');
-        paste.content = content.slice(0, config.index.max_lines).join('\n');
+        console.log(paste.getBrushFile());
+        if (!_.contains(brushes, paste.getBrushFile()))
+          brushes.push(paste.getBrushFile());
       });
-      var brush_list = _.map(pastes, function (paste) {
-        if (!lang_brush[paste.language])
-          paste.language = 'plain';
 
-        paste.language_caption = lang_brush[paste.language][2];
-        return lang_brush[paste.language][0];
-      });
-      brush_list = _.uniq(brush_list);
-      res.render('list', {num_pages:num_pages, all:all, page:page, brush_list: brush_list, pastes: pastes});
-    });
-
+      res.render('list', {pastes: pastes, page: page, pages: pages, brushes: brushes})
   });
-
-
 };
 
 
 exports.readPaste = function (req, res, next) {
   var id = req.params.id, format = req.params.format || 'html';
-  store.get(id, function (err, paste) {
+  Paste.getById(id, function (err, paste) {
     if (err) return next();
     if (req.params.file) {
       format = 'raw';
@@ -67,14 +40,7 @@ exports.readPaste = function (req, res, next) {
     }
 
     if (format == 'html') {
-      var brush_list = ['shBrushPlain.js'];
-      if (lang_brush[paste.language])
-        brush_list = [lang_brush[paste.language][0]];
-      else
-        paste.language = 'plain';
-      paste.language_caption = lang_brush[paste.language][2];
-
-      res.render('show', {brush_list: brush_list, paste: paste});
+      res.render('show', {paste: paste, brushes: [paste.getBrushFile()]});
     }
     else if (format == 'raw') {
       res.set('Content-Type', 'text/plain; charset=utf-8; charset=utf-8');
@@ -98,31 +64,24 @@ exports.createPasteForm = function (req, res) {
 
 
 exports.createPaste = function (req, res, next) {
-  if (req.body.content.length == 0) throw new Error('content required');
-  var paste = {
-    summary: req.body.summary,
-    content: req.body.content,
-    expire: null,
-    encrypted: req.body.encrypted === 'true',
-    private: req.body.private === 'true',
-    language: req.body.language
-  };
-  if (req.body.expire != '0') {
-    var exp = new Date();
-    paste.expire = exp.getTime() + parseInt(req.body.expire, 10) * 1000;
-  }
+  var paste = new Paste(req.body);
 
+  // remember the paste settings in the session
+  if (req.body.expire != '0') {
+    req.session.option_expire = req.body.expire;
+  }
   _.extend(req.session, {
     option_language: paste.language,
-    option_expire: req.body.expire,
     option_private: paste.private,
     option_announce: req.body.announce
   });
-  store.create(paste, function (err, paste) {
+
+  paste.save(function (err) {
     if (err != null) return next(err);
 
     console.log('new paste created, id: ' + paste.id);
 
+    // IRC announce
     if (req.body.announce == 'true') {
       var url = req.protocol + '://' + req.headers.host + '/' + paste.id;
       var message = 'new paste submitted :: ' + url;
@@ -155,7 +114,7 @@ exports.createPaste = function (req, res, next) {
 
 exports.updatePasteForm = function (req, res, next) {
   var id = req.params.id, secret = req.params.secret;
-  store.get(id, function (err, paste) {
+  Paste.getById(id, function (err, paste) {
     if (err != null) return next(err);
     if (secret !== paste.secret) return next(new Error('wrong secret'));
     res.render('update', {paste: paste});
@@ -164,40 +123,31 @@ exports.updatePasteForm = function (req, res, next) {
 
 
 exports.updatePaste = function (req, res, next) {
-  var paste = {
-    id: req.body.id,
-    secret: req.body.secret,
-    summary: req.body.summary,
-    content: req.body.content,
-    language: req.body.language
-  };
+  var paste = new Paste(req.body);
 
-  _.extend(req.session, {
-    option_language: paste.language
-  });
-  store.get(paste.id, function (err, _paste) {
+  // remember settings
+  req.session.option_language = paste.language;
+
+  // updates the paste (secret must match)
+  paste.save(req.body.id, function (err) {
     if (err != null) return next(err);
-    if (_paste.secret !== paste.secret) return next(new Error('wrong secret'));
-    store.update(paste, function (err) {
-      if (err != null) return next(err);
-      if (req.xhr) {
-        res.send({id: paste.id, secret: paste.secret});
+    if (req.xhr) {
+      res.send({id: paste.id, secret: paste.secret});
+    }
+    else {
+      if (req.session.test) {
+        res.redirect(res.locals.url([paste.id]));
       }
       else {
-        if (req.session.test) {
-          res.redirect(res.locals.url([paste.id]));
-        }
-        else {
-          res.redirect(res.locals.url(['update', paste.id, paste.secret]));
-        }
+        res.redirect(res.locals.url(['update', paste.id, paste.secret]));
       }
-    });
+    }
   });
 };
 
 
 exports.deletePasteForm = function (req, res, next) {
-  store.get(req.params.id, function (err, paste) {
+  Paste.getById(req.params.id, function (err, paste) {
     if (err != null) return next(err);
     if (req.params.secret !== paste.secret)
       return next(new Error('wrong secret'));
@@ -207,11 +157,11 @@ exports.deletePasteForm = function (req, res, next) {
 
 
 exports.deletePaste = function (req, res, next) {
-  store.get(req.body.id, function (err, paste) {
+  Paste.getById(req.body.id, function (err, paste) {
     if (err != null) return next(err);
     if (req.body.secret !== paste.secret)
       return next(new Error('wrong secret'));
-    store.delete(req.body.id, function (err) {
+    paste.delete(function (err) {
       if (err != null) return next(err);
       res.redirect('/');
     });

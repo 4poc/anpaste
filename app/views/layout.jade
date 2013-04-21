@@ -16,12 +16,17 @@ html
     script(type='text/javascript', src='/js/jquery.easydate-0.2.4.js')
     script(type='text/javascript', src='/js/sjcl.js')
     script(type='text/javascript', src='/js/tabIndent.js')
+    script(type='text/javascript', src='/js/underscore-min.js')
 
-    script(type='text/javascript', src='/js/sh-bugfix.js')
-    script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.js')
+    if config.debug
+      script(type='text/javascript', src='/js/syntaxhighlighter/scripts/XRegExp.js')
+      script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.js')
+    else
+      script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shCore.min.js')
 
-    if typeof brush_list !== 'undefined'
-      each brush in brush_list
+    script(type='text/javascript', src='/js/syntaxhighlighter/scripts/shBrushPlain.js')
+    if typeof brushes !== 'undefined'
+      each brush in brushes
         script(type='text/javascript', src='/js/syntaxhighlighter/scripts/#{brush}')
 
     link(rel='stylesheet', href='/js/syntaxhighlighter/styles/shCore.css')
@@ -29,6 +34,7 @@ html
 
     link(rel='icon', type='image/png', href='/favicon.png')
 
+    script(type='text/javascript', src='/js/token.js')
     script(type='text/javascript', src='/js/client.js')
     
   body
@@ -37,6 +43,7 @@ html
       var session_test = #{session.test || false};
       SyntaxHighlighter.defaults.toolbar = false;
       SyntaxHighlighter.defaults.gutter = #{session.show_line_numbers};
+      SyntaxHighlighter.defaults['auto-links'] = false;
 
     ul.global.middot_list
       li.first

@@ -23,7 +23,7 @@ block content
     input(type='hidden', name='encrypted', value='#{paste.encrypted ? 'true' : 'false'}')
 
     label(for='summary') summary
-    input(type='text', name='summary', value='#{paste.summary}')
+    input(type='text', name='summary', value='#{paste.summary || ''}')
 
     if paste.encrypted
       #encrypted-data #{paste.content}

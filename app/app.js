@@ -80,7 +80,7 @@ app.configure(function () {
 // sets a timer to delete expired pastes every 5 minutes
 setInterval(function () {
   console.log('delete expired pastes');
-  store.deleteExpired(function (err) {
+  Paste.deleteExpired(function (err) {
     if (err != null) console.error(err);
   });
 }, 15 * 60 * 1000);
@@ -106,7 +106,7 @@ app.use(function (err, req, res, next) {
   console.log('\n');
   console.log('AN ERROR OCCURED :: ' + req.ip + ' :: ' + req.originalUrl);
   console.log(' ========================================================= ');
-  console.log(err);
+  console.log(err.stack);
   console.log('\n');
   res.render('create', {notice: err});
 });

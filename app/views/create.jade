@@ -22,8 +22,8 @@ block content
           div
             label(for='language') language
             select#language(name='language')
-              each lang in brush
-                option(value=lang[1], selected=session.option_language==lang[1]?true:false) #{lang[2]}
+              each val in brush
+                option(value=val[1], selected=session.option_language==val[1]?true:false) #{val[2]}
 
           div
             label(for='expire') expire

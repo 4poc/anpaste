@@ -9,10 +9,7 @@ exports.create = function () {
   var handler = function (conn) {
     console.log('tcpsrv new client connection ' + conn.remoteAddress);
 
-    conn.setKeepAlive(true);
-    conn.setTimeout(10000);
     conn.setEncoding('UTF-8');
-    conn.write('something\r\n');
     conn.pause();
     // reserve ID
     store.createId(16, function (err, id) {

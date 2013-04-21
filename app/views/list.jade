@@ -11,7 +11,7 @@ block content
           ul.middot_list
             mixin time(paste)
             if paste.language != 'plain'
-              li #{paste.language_caption}
+              li #{paste.getLanguageCaption()}
             if session.secrets && session.secrets[paste.id]
               li
                 a(href=url(['update', paste.id, session.secrets[paste.id]])) update
@@ -28,6 +28,6 @@ block content
   .pager
     if page > 1
       a.previous(href='/list?page=#{page-1}') &laquo; previous page
-    if page < num_pages
+    if page < pages
       a.next(href='/list?page=#{page+1}') next page &raquo;
 
