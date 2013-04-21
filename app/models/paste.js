@@ -21,11 +21,14 @@ function Paste(obj) {
   this.username = obj.username || null;
   this.summary = obj.summary || null;
 
-  if (_.isEmpty(obj.content))
-    throw new Error('content is required');
-  if (!_.isString(obj.content))
-    throw new Error('content must be string');
-  this.content = obj.content;
+  this.stream = obj.stream;
+  if (!this.stream) {
+    if (_.isEmpty(obj.content))
+      throw new Error('content is required');
+    if (!_.isString(obj.content))
+      throw new Error('content must be string');
+    this.content = obj.content;
+  }
 
   // make sure expire and created are Date instances
   
@@ -181,19 +184,42 @@ Paste.releaseId = function (id) {
  */
 Paste.prototype.save = function (id, callback) {
   callback = _.isFunction(id) ? id : callback;
-  if (this.id) // update existing record
-    this._update(callback);
-  else { // insert new
-    if (_.isNumber(id)) { // use the provided id
-      this.id = id;
-      this._insert(callback);
-    }
-    else { // use a randomly generated new one
-      Paste.claimId(this.private ? 16 : 1, function (err, id) {
-        if (err) return callback(err);
-        this.id = id;
-        this._insert(callback);
-      }.bind(this));
+  var self = this;
+
+  // this is done async: read the stream for the content
+  if (this.stream) {
+    this.content = '';
+    this.stream.on('data', function (data) {
+      self.content += data;
+    });
+    this.stream.on('close', function () {
+      if (self.content.length > 0) {
+        next();
+      }
+      else {
+        callback('paste upload failed.');
+      }
+    });
+  }
+  else {
+    next();
+  }
+
+  function next() {
+    if (self.id) // update existing record
+      self._update(callback);
+    else { // insert new
+      if (_.isNumber(id)) { // use the provided id
+        self.id = id;
+        self._insert(callback);
+      }
+      else { // use a randomly generated new one
+        Paste.claimId(self.private ? 16 : 1, function (err, id) {
+          if (err) return callback(err);
+          self.id = id;
+          self._insert(callback);
+        }.bind(self));
+      }
     }
   }
 };

@@ -1,5 +1,6 @@
 var sprintf = require('sprintf').sprintf;
 var util = require('util');
+var fs = require('fs');
 var _ = require('underscore');
 
 var config = require('../../config.json');
@@ -30,7 +31,15 @@ exports.readPaste = function (req, res, next) {
 };
              
 exports.createPaste = function (req, res, next) {
-  var paste = new Paste(req.body);
+  var obj = req.body;
+
+  if (_.keys(req.files).length > 0) {
+    var file = req.files[_.keys(req.files)[0]];
+    obj.summary = file.name;
+    obj.stream = fs.createReadStream(file.path);
+  } // read file upload as content/ filename as summary
+
+  var paste = new Paste(obj);
   paste.save(function (err) {
     if (err != null) return next(err);
 
