@@ -55,7 +55,15 @@ exports.createPaste = function (req, res, next) {
 };
              
 exports.updatePaste = function (req, res, next) {
-  var paste = new Paste(req.body);
+  var obj = req.body;
+
+  if (_.keys(req.files).length > 0) {
+    var file = req.files[_.keys(req.files)[0]];
+    obj.summary = file.name;
+    obj.stream = fs.createReadStream(file.path);
+  } // read file upload as content/ filename as summary
+
+  var paste = new Paste(obj);
 
   // updates the paste (secret must match)
   paste.save(req.body.id, function (err) {
@@ -66,7 +74,7 @@ exports.updatePaste = function (req, res, next) {
 };
              
 exports.deletePaste = function (req, res, next) {
-  Paste.getById(req.body.id, function (err, paste) {
+  Paste.getById(req.params.id, function (err, paste) {
     if (err != null) return next(err);
     if (req.body.secret !== paste.secret)
       return next(new Error('wrong secret'));
