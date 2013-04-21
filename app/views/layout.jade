@@ -36,6 +36,12 @@ html
 
     script(type='text/javascript', src='/js/token.js')
     script(type='text/javascript', src='/js/client.js')
+
+    if !session.show_line_numbers
+      style(type='text/css')
+        body .syntaxhighlighter .line {
+          white-space: pre-wrap !important; /* make code wrap */
+        }
     
   body
 
