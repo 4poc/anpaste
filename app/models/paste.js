@@ -239,6 +239,17 @@ Paste.prototype.getLanguageCaption = function () {
     return 'plain';
 };
 
+Paste.prototype.getExcerpt = function () {
+  var content = this.content.split('\n'), post = '';
+
+  if (content.length > config.index.max_lines)
+    post = '\n...';
+
+  content = content.slice(0, config.index.max_lines);
+
+  return content.join('\n') + post;
+};
+
 
 
 

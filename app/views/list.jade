@@ -23,7 +23,7 @@ block content
               | #{paste.summary}
             else
               | ##{paste.id}
-        pre#content(class='brush: #{paste.language}') #{paste.content}
+        pre#content(class='brush: #{paste.language}') #{paste.getExcerpt()}
 
   .pager
     if page > 1
