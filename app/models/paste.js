@@ -180,7 +180,8 @@ Paste.releaseId = function (id) {
  * Inserts or updates the paste instance in the database.
  *
  * Insert by a random id or by the optionally provided id, otherwise
- * updates an existing record.
+ * updates an existing record. Only set id to create a new paste
+ * with that exact id.
  */
 Paste.prototype.save = function (id, callback) {
   callback = _.isFunction(id) ? id : callback;
@@ -206,6 +207,7 @@ Paste.prototype.save = function (id, callback) {
   }
 
   function next() {
+    console.log('next: ' + self.id);
     if (self.id) // update existing record
       self._update(callback);
     else { // insert new

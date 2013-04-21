@@ -120,7 +120,7 @@ exports.updatePaste = function (req, res, next) {
   req.session.option_language = paste.language;
 
   // updates the paste (secret must match)
-  paste.save(req.body.id, function (err) {
+  paste.save(function (err) {
     if (err != null) return next(err);
     if (req.xhr) {
       res.send({id: paste.id, secret: paste.secret});

@@ -56,6 +56,7 @@ exports.createPaste = function (req, res, next) {
              
 exports.updatePaste = function (req, res, next) {
   var obj = req.body;
+  obj.id = req.params.id;
 
   if (_.keys(req.files).length > 0) {
     var file = req.files[_.keys(req.files)[0]];
@@ -66,7 +67,7 @@ exports.updatePaste = function (req, res, next) {
   var paste = new Paste(obj);
 
   // updates the paste (secret must match)
-  paste.save(req.params.id, function (err) {
+  paste.save(function (err) {
     if (err != null) return next(err);
     res.type('json');
     res.json({id: paste.id, secret: paste.secret});
