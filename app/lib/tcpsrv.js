@@ -2,8 +2,9 @@
 var net = require('net');
 var _ = require('underscore');
 
-var store = require('./store.js');
 var config = require('../../config.json');
+
+var Paste = require('../models/paste.js').Paste;
 
 exports.create = function () {
   var handler = function (conn) {
@@ -12,7 +13,8 @@ exports.create = function () {
     conn.setEncoding('UTF-8');
     conn.pause();
     // reserve ID
-    store.createId(16, function (err, id) {
+
+    Paste.claimId(16, function (err, id) {
       if (err) {
         console.log('tcpsrv error occured: ' + err);
         conn.destroy();
@@ -29,7 +31,8 @@ exports.create = function () {
       conn.on('close', function () {
         if (content.length > 0) {
           console.log('tcpsrv save new paste with id ' + id);
-          store.createWithId(id, content, function (err, paste) {});
+          var paste = new Paste({content: content});
+          paste.save(id, function (err) {});
         }
       });
     });

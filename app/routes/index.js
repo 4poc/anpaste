@@ -2,7 +2,6 @@ var sprintf = require('sprintf').sprintf;
 var util = require('util');
 var _ = require('underscore');
 
-var store = require('../lib/store.js');
 var announce = require('../lib/announce.js').announce;
 var config = require('../../config.json');
 
