@@ -2,7 +2,6 @@ var sprintf = require('sprintf').sprintf;
 var util = require('util');
 var _ = require('underscore');
 
-var announce = require('../lib/announce.js').announce;
 var config = require('../../config.json');
 
 var Paste = require('../models/paste.js').Paste;
@@ -19,7 +18,6 @@ exports.list = function (req, res, next) {
       // create a uniq list of brushes used in the resulting pastes
       var brushes = [];
       _.each(pastes, function (paste) {
-        console.log(paste.getBrushFile());
         if (!_.contains(brushes, paste.getBrushFile()))
           brushes.push(paste.getBrushFile());
       });
@@ -81,14 +79,8 @@ exports.createPaste = function (req, res, next) {
     console.log('new paste created, id: ' + paste.id);
 
     // IRC announce
-    if (req.body.announce == 'true') {
-      var url = req.protocol + '://' + req.headers.host + '/' + paste.id;
-      var message = 'new paste submitted :: ' + url;
-      if (paste.summary != '') {
-        message += ' :: ' + paste.summary;
-      }
-      announce(message);
-    }
+    if (req.body.announce == 'true')
+      paste.announce();
 
     // store secret in session data
     if (!req.session.secrets) {

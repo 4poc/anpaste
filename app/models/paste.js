@@ -3,6 +3,7 @@ var store = require('../lib/store.js');
 var token = require('../public/js/token.js');
 var config = require('../../config.json');
 var brush = require('../../brush.json');
+var announce = require('../lib/announce.js').announce;
 
 var brushList = {};
 _.each(brush, function (b) {
@@ -52,15 +53,12 @@ function Paste(obj) {
     this.language = obj.language;
 
   this.encrypted = obj.encrypted === 'true';
-  console.log('private = ' + obj.private);
   this.private = obj.private === 'true';
 }
 exports.Paste = Paste;
 
 Paste.getById = function (id, callback) {
   var sql = 'select * from paste where id = ? and ' + Paste.where();
-  console.log(sql);
-  console.log('id: ' + id)
   store.query(sql, [id], function (err, res) {
     if (err != null) return callback(err);
     if (res.length == 0) return callback(new Error('paste not found'));
@@ -254,6 +252,15 @@ Paste.prototype.getExcerpt = function () {
   content = content.slice(0, config.index.max_lines);
 
   return content.join('\n') + post;
+};
+
+Paste.prototype.announce = function () {
+  var url = config.server.url + '/' + this.id;
+  var message = 'new paste submitted :: ' + url;
+  if (this.summary != '') {
+    message += ' :: ' + this.summary;
+  }
+  announce(message);
 };
 
 
