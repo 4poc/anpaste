@@ -291,6 +291,10 @@ Paste.prototype.announce = function () {
   announce(message);
 };
 
+Paste.prototype.getUrl = function () {
+  return config.server.url + '/' + this.id;
+};
+
 
 
 

@@ -50,7 +50,7 @@ exports.createPaste = function (req, res, next) {
       paste.announce();
 
     res.type('json');
-    res.json({id: paste.id, secret: paste.secret});
+    res.json({id: paste.id, secret: paste.secret, url: paste.getUrl()});
   });
 };
              
@@ -70,7 +70,7 @@ exports.updatePaste = function (req, res, next) {
   paste.save(function (err) {
     if (err != null) return next(err);
     res.type('json');
-    res.json({id: paste.id, secret: paste.secret});
+    res.json({id: paste.id, url: paste.getUrl()});
   });
 };
              
