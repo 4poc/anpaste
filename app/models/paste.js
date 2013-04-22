@@ -52,8 +52,11 @@ function Paste(obj) {
     this.created = new Date();
 
   this.language = 'plain';
-  if (!_.isUndefined(obj.language) && _.has(brushList, obj.language))
+  if (!_.has(brushList, obj.language))
+    throw new Error('invalid language');
+  if (_.isString(this.language))
     this.language = obj.language;
+
 
   this.encrypted = obj.encrypted === 'true';
   this.private = obj.private === 'true';

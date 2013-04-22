@@ -118,7 +118,10 @@ app.use(function (err, req, res, next) {
   console.log(' ========================================================= ');
   console.log(err.stack);
   console.log('\n');
-  res.render('create', {notice: err});
+  if (req.path.match(/^\/api/i))
+    res.json({error: err.toString()});
+  else
+    res.render('create', {notice: err});
 });
 
 

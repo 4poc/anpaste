@@ -181,7 +181,10 @@ exports.about = function (req, res, next) {
 
 exports.notFound = function (req, res, next) {
   res.status(404);
-  res.render('not_found');
+  if (req.path.match(/^\/api/i))
+    res.json({error: 'resource not found'});
+  else
+    res.render('not_found');
 };
 
 
