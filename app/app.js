@@ -17,6 +17,8 @@ var tcpsrv = require('./lib/tcpsrv.js');
 
 var ConnectStore = require('./lib/connect-store.js')(express);
 
+var Paste = require('./models/paste.js').Paste;
+
 // Initialisation of express
 var app = express();
 
