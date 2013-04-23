@@ -2,6 +2,7 @@ var sprintf = require('sprintf').sprintf;
 var util = require('util');
 var fs = require('fs');
 var _ = require('underscore');
+var logger = require('../lib/log.js');
 
 var config = require('../../config.json');
 

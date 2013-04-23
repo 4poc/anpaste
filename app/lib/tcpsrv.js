@@ -1,6 +1,7 @@
 
 var net = require('net');
 var _ = require('underscore');
+var logger = require('./log.js');
 
 var config = require('../../config.json');
 

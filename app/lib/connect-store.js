@@ -8,6 +8,7 @@
 
 var store = require('./store.js');
 var events = require('events');
+var logger = require('./log.js');
 
 module.exports = function (connect) {
   var Store = connect.session.Store;

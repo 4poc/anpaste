@@ -1,4 +1,5 @@
 
+var logger = require('./log.js');
 var dgram = require('dgram');
 var config = require('../../config.json');
 

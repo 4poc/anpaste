@@ -15,5 +15,5 @@
     "underscore": "1.4.x",
     "winston": "0.7.x"
   },
-  "engines": { "node": ">= 0.8.x" }
+  "engines": { "node": ">= 0.10.x" }
 }

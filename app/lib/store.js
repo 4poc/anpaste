@@ -2,6 +2,7 @@
 var _ = require('underscore');
 var sprintf = require('sprintf').sprintf;
 var sqlite3 = require('sqlite3');
+var logger = require('./log.js');
 
 var util = require('util');
 

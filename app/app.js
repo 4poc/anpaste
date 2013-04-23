@@ -11,7 +11,7 @@ var util = require('util');
 // Internal modules
 var routes = require('./routes');
 var api = require('./routes/api');
-var mid = require('./middlewares.js');
+var middlewares = require('./middlewares.js');
 var store = require('./lib/store.js');
 var tcpsrv = require('./lib/tcpsrv.js');
 
@@ -27,7 +27,7 @@ var app = express();
 var public_path = path.join(__dirname, './public');
 var config = require('../config.json');
 var brush = require('../brush.json');
-
+var logger = require('./lib/log.js');
 
 app.configure(function () {
   // Setup view tempates
@@ -35,7 +35,6 @@ app.configure(function () {
   app.set('view engine', 'jade');
   app.locals.pretty = true;
 
-  app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
 
@@ -49,10 +48,6 @@ app.configure(function () {
   app.use(express.static(public_path));
   // compile the less stylesheet to a css
   app.use(require('less-middleware')({ src: public_path }));
-  
-  // show awesome error messages
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-
 
   // setup locals / view/request helpers
   app.use(function (req, res, next) {
@@ -77,6 +72,8 @@ app.configure(function () {
 
     next();
   });
+
+  app.use(middlewares.requestLogger);
 });
 
 
@@ -109,7 +106,7 @@ app.post('/api/1/paste'        , api.createPaste);
 app.put ('/api/1/paste/:id'    , api.updatePaste);
 app.delete('/api/1/paste/:id'  , api.deletePaste);
 
-app.get ('*'                   , routes.notFound);
+app.all ('*'                   , routes.notFound);
 
 // Error messages all redirect to create
 app.use(function (err, req, res, next) {
@@ -118,8 +115,10 @@ app.use(function (err, req, res, next) {
   console.log(' ========================================================= ');
   console.log(err.stack);
   console.log('\n');
-  if (req.path.match(/^\/api/i))
+  if (req.path.match(/^\/api/i)) {
+    res.status(500);
     res.json({error: err.toString()});
+  }
   else
     res.render('create', {notice: err});
 });

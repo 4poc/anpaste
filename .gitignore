@@ -3,4 +3,5 @@ node_modules
 config.json
 Guardfile
 anpaste.sqlite
+anpaste.log
 

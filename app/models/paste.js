@@ -4,6 +4,7 @@ var token = require('../public/js/token.js');
 var config = require('../../config.json');
 var brush = require('../../brush.json');
 var announce = require('../lib/announce.js').announce;
+var logger = require('../lib/log.js');
 
 var brushList = {};
 _.each(brush, function (b) {
@@ -52,9 +53,7 @@ function Paste(obj) {
     this.created = new Date();
 
   this.language = 'plain';
-  if (!_.has(brushList, obj.language))
-    throw new Error('invalid language');
-  if (_.isString(this.language))
+  if (_.isString(this.language) && _.has(brushList, obj.language))
     this.language = obj.language;
 
 
