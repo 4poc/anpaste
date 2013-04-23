@@ -49,5 +49,21 @@
     "port": 55555,
     "bind": ["0.0.0.0", "::1"],
     "reply": "This socket is now listening for your paste to be posted.\r\nOnce you close this connection it is made available at http://example.com/"
+  },
+  "logger": {
+    "console": {
+      "level": "trace",
+      "silent": false,
+      "colorize": true,
+      "timestamp": true
+    },
+    "file": {
+      "level": "trace",
+      "silent": false,
+      "timestamp": true,
+      "filename": "anpaste.log",
+      "maxsize": 524288,
+      "json": false
+    }
   }
 }
