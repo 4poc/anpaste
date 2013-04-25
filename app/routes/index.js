@@ -31,7 +31,7 @@ exports.list = function (req, res, next) {
 exports.readPaste = function (req, res, next) {
   var id = req.params.id, format = req.params.format || 'html';
   Paste.getById(id, function (err, paste) {
-    if (err) return next();
+    if (err) return next(err);
     if (req.params.file) {
       format = 'raw';
       res.set('Content-Disposition', 'attachment; filename='+req.params.file);
@@ -77,7 +77,7 @@ exports.createPaste = function (req, res, next) {
   paste.save(function (err) {
     if (err != null) return next(err);
 
-    console.log('new paste created, id: ' + paste.id);
+    logger.info('created new paste id=%s', paste.id);
 
     // IRC announce
     if (req.body.announce == 'true')
@@ -123,6 +123,7 @@ exports.updatePaste = function (req, res, next) {
   // updates the paste (secret must match)
   paste.save(function (err) {
     if (err != null) return next(err);
+    logger.info('paste updated id=%s', req.body.id);
     if (req.xhr) {
       res.send({id: paste.id, secret: paste.secret});
     }
@@ -155,6 +156,7 @@ exports.deletePaste = function (req, res, next) {
       return next(new Error('wrong secret'));
     paste.delete(function (err) {
       if (err != null) return next(err);
+      logger.info('paste deleted id=%s', req.body.id);
       res.redirect('/');
     });
   });

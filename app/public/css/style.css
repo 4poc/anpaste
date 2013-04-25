@@ -20,7 +20,8 @@ h1 {
   color: #444;
   margin-bottom: 2px;
 }
-h1.not_found {
+h1.not_found,
+h1.error {
   font-size: 43px;
 }
 h2 {

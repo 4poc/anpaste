@@ -1,5 +1,5 @@
-
 var net = require('net');
+var util = require('util');
 var _ = require('underscore');
 var logger = require('./log.js');
 
@@ -9,15 +9,14 @@ var Paste = require('../models/paste.js').Paste;
 
 exports.create = function () {
   var handler = function (conn) {
-    console.log('tcpsrv new client connection ' + conn.remoteAddress);
+    logger.info('new TCP connection from ' + conn.remoteAddress);
 
     conn.setEncoding('UTF-8');
     conn.pause();
-    // reserve ID
 
     Paste.claimId(16, function (err, id) {
       if (err) {
-        console.log('tcpsrv error occured: ' + err);
+        logger.error('TCP service error in id claim: %s', err);
         conn.destroy();
         return;
       }
@@ -25,16 +24,14 @@ exports.create = function () {
       conn.write(config.tcpsrv.reply + id + '\r\n');
       conn.resume();
 
-      var content = '';
-      conn.on('data', function (data) {
-        content += data;
-      });
-      conn.on('close', function () {
-        if (content.length > 0) {
-          console.log('tcpsrv save new paste with id ' + id);
-          var paste = new Paste({content: content});
-          paste.save(id, function (err) {});
+      var paste = new Paste({stream: conn});
+      paste.save(id, function (err) {
+        if (err) {
+          logger.error('TCP service error in saving paste (id=%s)', id);
+          logger.error(err);
+          return;
         }
+        logger.info('paste created over TCP service, (id=%s)', id);
       });
     });
   };
@@ -43,7 +40,7 @@ exports.create = function () {
     var server = net.createServer(handler);
     server.listen(config.tcpsrv.port, host, function () {
       var addy = server.address();
-      console.log('tcpsrv server listening ' + addy.family + '/' + addy.address + ':' + addy.port);
+      logger.info('TCP service listening %s: [%s]:%d', addy.family, addy.address, addy.port);
     });
   });
 };

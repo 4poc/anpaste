@@ -25,7 +25,7 @@ exports.list = function (req, res, next) {
 exports.readPaste = function (req, res, next) {
   var id = req.params.id;
   Paste.getById(id, function (err, paste) {
-    if (err) return next();
+    if (err) return next(err);
     res.type('json');
     res.json(_.pick(paste, ['id', 'summary', 'content', 'language', 'created', 'expire']));
   });
@@ -44,7 +44,7 @@ exports.createPaste = function (req, res, next) {
   paste.save(function (err) {
     if (err != null) return next(err);
 
-    console.log('new paste created, id: ' + paste.id);
+    logger.info('api: created new paste id=%s', paste.id);
 
     // IRC announce
     if (req.body.announce == 'true')
@@ -70,6 +70,7 @@ exports.updatePaste = function (req, res, next) {
   // updates the paste (secret must match)
   paste.save(function (err) {
     if (err != null) return next(err);
+    logger.info('api: paste updated id=%s', obj.id);
     res.type('json');
     res.json({id: paste.id, url: paste.getUrl()});
   });
@@ -82,6 +83,7 @@ exports.deletePaste = function (req, res, next) {
       return next(new Error('wrong secret'));
     paste.delete(function (err) {
       if (err != null) return next(err);
+      logger.info('api: paste deleted, id=%s', req.params.id);
       res.type('json');
       res.json({id: paste.id});
     });

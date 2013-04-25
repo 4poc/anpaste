@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var util = require('util');
 var store = require('../lib/store.js');
 var token = require('../public/js/token.js');
 var config = require('../../config.json');
@@ -12,6 +13,7 @@ _.each(brush, function (b) {
 });
 
 function Paste(obj) {
+  obj = obj || {};
   this.id = obj.id || null;
 
   if (_.isNull(this.id))
@@ -24,10 +26,6 @@ function Paste(obj) {
 
   this.stream = obj.stream;
   if (!this.stream) {
-    if (_.isEmpty(obj.content))
-      throw new Error('content is required');
-    if (!_.isString(obj.content))
-      throw new Error('content must be string');
     this.content = obj.content;
   }
 
@@ -56,9 +54,8 @@ function Paste(obj) {
   if (_.isString(this.language) && _.has(brushList, obj.language))
     this.language = obj.language;
 
-
-  this.encrypted = obj.encrypted === 'true';
-  this.private = obj.private === 'true';
+  this.encrypted = obj.encrypted === 'true' || obj.encrypted === true || obj.encrypted === 1;
+  this.private = obj.private === 'true' || obj.private === true || obj.private === 1;
 }
 exports.Paste = Paste;
 
@@ -186,21 +183,24 @@ Paste.releaseId = function (id) {
  * with that exact id.
  */
 Paste.prototype.save = function (id, callback) {
-  callback = _.isFunction(id) ? id : callback;
+  if (_.isFunction(id)) {
+    callback = id;
+    id = null;
+  }
   var self = this;
 
   // this is done async: read the stream for the content
   if (this.stream) {
     this.content = '';
     this.stream.on('data', function (data) {
-      self.content += data;
+      self.content += data.toString();
     });
     this.stream.on('close', function () {
       if (self.content.length > 0) {
         next();
       }
       else {
-        callback('paste upload failed.');
+        callback(new Error('paste upload failed!'));
       }
     });
   }
@@ -209,20 +209,29 @@ Paste.prototype.save = function (id, callback) {
   }
 
   function next() {
-    console.log('next: ' + self.id);
-    if (self.id) // update existing record
+    if (_.isEmpty(self.content))
+      return callback(new Error('paste must have content!'));
+    if (!_.isString(self.content))
+      return callback(new Error('paste content must be a string!'));
+    logger.info('create paste, content size: ' + self.content.length)
+
+    if (self.id) { // update existing record
+      logger.info('update existing id=%s', self.id);
       self._update(callback);
+    }
     else { // insert new
-      if (_.isNumber(id)) { // use the provided id
+      if (id) { // use the provided id
         self.id = id;
+        logger.info('insert new with set id=%s', self.id);
         self._insert(callback);
       }
       else { // use a randomly generated new one
         Paste.claimId(self.private ? 16 : 1, function (err, id) {
           if (err) return callback(err);
           self.id = id;
+          logger.info('insert new with random id=%s', self.id);
           self._insert(callback);
-        }.bind(self));
+        });
       }
     }
   }
@@ -231,6 +240,7 @@ Paste.prototype.save = function (id, callback) {
 Paste.prototype._insert = function (callback) {
   var obj = _.pick(this, ['id', 'secret', 'username', 'summary', 'content',
       'expire', 'created', 'encrypted', 'language', 'private']);
+  logger.trace('paste insert: ' + util.inspect(obj));
   store.insert('paste', obj, callback);
 };
 

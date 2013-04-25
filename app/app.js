@@ -22,7 +22,6 @@ var Paste = require('./models/paste.js').Paste;
 // Initialisation of express
 var app = express();
 
-
 // Configuration
 var public_path = path.join(__dirname, './public');
 var config = require('../config.json');
@@ -46,6 +45,7 @@ app.configure(function () {
   }));
 
   app.use(express.static(public_path));
+  //app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   // compile the less stylesheet to a css
   app.use(require('less-middleware')({ src: public_path }));
 
@@ -77,11 +77,14 @@ app.configure(function () {
 });
 
 
-// sets a timer to delete expired pastes every 5 minutes
+// sets a timer to delete expired pastes every 15 minutes
 setInterval(function () {
-  console.log('delete expired pastes');
   Paste.deleteExpired(function (err) {
-    if (err != null) console.error(err);
+    if (err) {
+      logger.error('delete expired pastes failed!');
+      logger.error(err);
+    }
+    logger.trace('deleted expired pastes');
   });
 }, 15 * 60 * 1000);
 
@@ -108,25 +111,28 @@ app.delete('/api/1/paste/:id'  , api.deletePaste);
 
 app.all ('*'                   , routes.notFound);
 
-// Error messages all redirect to create
+// Error messages display the create form with a notice
 app.use(function (err, req, res, next) {
-  console.log('\n');
-  console.log('AN ERROR OCCURED :: ' + req.ip + ' :: ' + req.originalUrl);
-  console.log(' ========================================================= ');
-  console.log(err.stack);
-  console.log('\n');
-  if (req.path.match(/^\/api/i)) {
+  logger.error('error in routing occured:');
+  logger.error(err);
     res.status(500);
+  if (req.path.match(/^\/api/i)) {
     res.json({error: err.toString()});
   }
-  else
+  else if (req.path.match(/^\/create/i)) {
     res.render('create', {notice: err});
+  }
+  else {
+    if (err.toString().match('paste not found'))
+      return routes.notFound(req, res, next);
+    res.render('error', {error: err.toString()});
+  }
 });
 
 
 // start the express server
 http.createServer(app).listen(config.server.port, config.server.bind, function() {
-  console.log('Express server listening on port ' + config.server.port);
+  logger.info('express webserver listening: %s:%d', config.server.bind, config.server.port);
 });
 
 // start the TCP server, for netcat/telnet posting;)
