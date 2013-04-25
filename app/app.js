@@ -29,6 +29,8 @@ var brush = require('../brush.json');
 var logger = require('./lib/log.js');
 
 app.configure(function () {
+  app.enable('trust proxy');
+
   // Setup view tempates
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -94,7 +96,6 @@ app.get ('/'                   , routes.index);
 app.get ('/list'               , routes.list);
 app.get ('/create'             , routes.createPasteForm);
 app.post('/create'             , routes.createPaste);
-app.get ('/:id.:format?/:file?', routes.readPaste);
 app.get ('/update/:id/:secret' , routes.updatePasteForm);
 app.post('/update'             , routes.updatePaste);
 app.get ('/delete/:id/:secret' , routes.deletePasteForm);
@@ -109,6 +110,7 @@ app.post('/api/1/paste'        , api.createPaste);
 app.put ('/api/1/paste/:id'    , api.updatePaste);
 app.delete('/api/1/paste/:id'  , api.deletePaste);
 
+app.get ('/:id.:format?/:file?', routes.readPaste);
 app.all ('*'                   , routes.notFound);
 
 // Error messages display the create form with a notice
