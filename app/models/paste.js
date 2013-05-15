@@ -14,7 +14,6 @@ var wordlist_path = path.resolve(__dirname, '../../wordlist');
 _.each(fs.readFileSync(config.wordlist ? config.wordlist : wordlist_path
 ).toString().split('\n'), function (line) {
   line = line.replace('/\\W/g', ''); // remove non-alpha
-  console.log(line);
   if (line != '') wordlist.push(line);
 });
 logger.info('loaded %d words from wordlist %s', wordlist.length, (config.wordlist ?  config.wordlist : wordlist_path));
