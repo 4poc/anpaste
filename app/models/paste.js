@@ -1,5 +1,6 @@
 var _ = require('underscore');
 var fs = require('fs');
+var path = require('path');
 var util = require('util');
 var store = require('../lib/store.js');
 var token = require('../public/js/token.js');
