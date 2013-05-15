@@ -13,7 +13,8 @@ var wordlist = [];
 var wordlist_path = path.resolve(__dirname, '../../wordlist');
 _.each(fs.readFileSync(config.wordlist ? config.wordlist : wordlist_path
 ).toString().split('\n'), function (line) {
-  line = line.replace('/\\W/g', ''); // remove non-alpha
+  var nonalpha = new RegExp('\\W', 'g');
+  line = line.replace(nonalpha, '').toLowerCase(); // remove non-alpha
   if (line != '') wordlist.push(line);
 });
 logger.info('loaded %d words from wordlist %s', wordlist.length, (config.wordlist ?  config.wordlist : wordlist_path));
