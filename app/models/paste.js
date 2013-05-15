@@ -9,11 +9,12 @@ var announce = require('../lib/announce.js').announce;
 var logger = require('../lib/log.js');
 
 var wordlist = [];
-_.each(fs.readFileSync(config.wordlist ?  config.wordlist : './wordlist'
+var wordlist_path = path.resolve(__dirname, '../../wordlist');
+_.each(fs.readFileSync(config.wordlist ? config.wordlist : wordlist_path
 ).toString().split('\n'), function (line) {
   if (line != '') wordlist.push(line);
 });
-logger.info('loaded %d words from wordlist %s', wordlist.length, (config.wordlist ?  config.wordlist : './wordlist'));
+logger.info('loaded %d words from wordlist %s', wordlist.length, (config.wordlist ?  config.wordlist : wordlist_path));
 
 var brushList = {};
 _.each(brush, function (b) {
@@ -345,7 +346,8 @@ Paste.prototype.getLanguageCaption = function () {
 };
 
 Paste.prototype.getContent = function () {
-  var content = this.content.replace('\r\n', '\n');
+  var crlf = new RegExp('\r\n', 'g');
+  var content = this.content.replace(crlf, '\n');
 
   return content;
 };
