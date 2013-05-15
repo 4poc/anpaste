@@ -1,4 +1,5 @@
 var _ = require('underscore');
+var fs = require('fs');
 var util = require('util');
 var store = require('../lib/store.js');
 var token = require('../public/js/token.js');
@@ -6,6 +7,13 @@ var config = require('../../config.json');
 var brush = require('../../brush.json');
 var announce = require('../lib/announce.js').announce;
 var logger = require('../lib/log.js');
+
+var wordlist = [];
+_.each(fs.readFileSync(config.wordlist ?  config.wordlist : './wordlist'
+).toString().split('\n'), function (line) {
+  if (line != '') wordlist.push(line);
+});
+logger.info('loaded %d words from wordlist %s', wordlist.length, (config.wordlist ?  config.wordlist : './wordlist'));
 
 var brushList = {};
 _.each(brush, function (b) {
@@ -56,6 +64,9 @@ function Paste(obj) {
 
   this.encrypted = obj.encrypted === 'true' || obj.encrypted === true || obj.encrypted === 1;
   this.private = obj.private === 'true' || obj.private === true || obj.private === 1;
+
+  // not stored in db, just used in save() to determine way to generate id:
+  this.wordids = obj.wordids === 'true' || obj.wordids === true || obj.wordids === 1;
 }
 exports.Paste = Paste;
 
@@ -171,6 +182,55 @@ Paste.claimId = function (min_len, callback) {
   });
 };
 
+/**
+ * Claim/reserve free wordid temporarily.
+ *
+ * Generates/claims a xkcd-style word ID:
+ *  http://xkcd.com/936/
+ *
+ * min_len determines the minimum word count
+ */
+Paste.claimWordId = function (min_len, callback) {
+  min_len = _.isFunction(min_len) ? 1 : min_len;
+  callback = _.isFunction(min_len) ? min_len : callback;
+  var generate = function (len) {
+    var token = [];
+    for (var i = 0; i < len; i++) {
+      token.push(wordlist[Math.floor(Math.random() * wordlist.length)]);
+    }
+    return token.join('-') + ((len==1)?'-':'');
+  };
+
+  // generate id with the length determined by the amount of pastes
+  var genid = function (count) {
+    var len = Math.ceil(Math.log(count + 1) /
+      Math.log(wordlist.length)), id;
+    return [len, generate(len)];
+  }, id;
+  store.count('paste', function (err, count_all) {
+    if (err != null) return callback(err);
+    var next = function () {
+      var pair = genid(count_all);
+      var len = pair[0];
+      id = pair[1];
+      if (len < min_len) {
+        id = generate(min_len);
+      }
+      if (_.contains(Paste._claimedIds, id))
+        return next();
+      Paste.exists(id, function (err, exists) {
+        if (err != null) return callback(err);
+        if (!exists) { // id is free
+          Paste._claimedIds.push(id);
+          return callback(null, id);
+        }
+        next();
+      });
+    };
+    next();
+  });
+};
+
 Paste.releaseId = function (id) {
   Paste._claimedIds = _.without(Paste._claimedIds, id);
 };
@@ -226,7 +286,14 @@ Paste.prototype.save = function (id, callback) {
         self._insert(callback);
       }
       else { // use a randomly generated new one
-        Paste.claimId(self.private ? 16 : 1, function (err, id) {
+        var claimfn = Paste.claimId;
+        var min_len = self.private ? 16 : 1;
+        if (self.wordids) {
+          claimfn = Paste.claimWordId;
+          min_len = self.private ? 4 : 1;
+        }
+        logger.info('generate id via %s, min_len is %d', (self.wordids?'words':'chars'), min_len);
+        claimfn(min_len, function (err, id) {
           if (err) return callback(err);
           self.id = id;
           logger.info('insert new with random id=%s', self.id);

@@ -44,6 +44,12 @@ block content
           label.inline(for='private') paste private
 
         div
+          input#wordids(type='checkbox', name='wordids', value='true', checked=session.option_wordids?true:false)
+          label.inline(for='wordids')
+            a(href='http://xkcd.com/936/') xkcd
+            | -style ids
+
+        div
           input#announce(type='checkbox', name='announce', value='true', checked=session.option_announce?true:false)
           label.inline(for='announce') announce in #woot
 

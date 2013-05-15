@@ -25,6 +25,7 @@
       "option_language": "plain",
       "option_expire": 0,
       "option_private": false,
+      "option_wordids": false,
       "option_announce": false
     }
   },

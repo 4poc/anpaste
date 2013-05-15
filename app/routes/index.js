@@ -71,6 +71,7 @@ exports.createPaste = function (req, res, next) {
   _.extend(req.session, {
     option_language: paste.language,
     option_private: paste.private,
+    option_wordids: paste.wordids,
     option_announce: req.body.announce
   });
 
