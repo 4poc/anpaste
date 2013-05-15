@@ -24,7 +24,7 @@ exports.create = function () {
       conn.write(config.tcpsrv.reply + id + '\r\n');
       conn.resume();
 
-      var paste = new Paste({stream: conn});
+      var paste = new Paste({stream: conn, private: true});
       paste.save(id, function (err) {
         if (err) {
           logger.error('TCP service error in saving paste (id=%s)', id);
