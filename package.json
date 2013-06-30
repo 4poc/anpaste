@@ -18,7 +18,7 @@
     "strftime": "0.5.x",
     "underscore": "1.4.x",
     "winston": "0.7.x",
-    "akismet": "0.0.x"
+    "request": "2.x"
   },
   "devDependencies": {
     "mocha": "1.9.x"
