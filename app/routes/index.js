@@ -2,6 +2,7 @@ var sprintf = require('sprintf').sprintf;
 var util = require('util');
 var _ = require('underscore');
 var logger = require('../lib/log.js');
+var akismet = require('../lib/akismet.js');
 
 var config = require('../../config.json');
 
@@ -98,6 +99,9 @@ exports.createPaste = function (req, res, next) {
       else {
         res.redirect(res.locals.url(['update', paste.id, paste.secret]));
       }
+    }
+    if (!paste.private && paste.status != Paste.STATUS_SPAM) {
+      akismet.check(paste, req, function() {});
     }
   });
 };

@@ -15,6 +15,7 @@ var admin = require('./routes/admin');
 var middlewares = require('./middlewares.js');
 var store = require('./lib/store.js');
 var tcpsrv = require('./lib/tcpsrv.js');
+var akismet = require('./lib/akismet.js');
 
 var ConnectStore = require('./lib/connect-store.js')(express);
 

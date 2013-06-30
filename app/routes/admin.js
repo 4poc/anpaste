@@ -44,7 +44,7 @@ exports.list = function (req, res, next) {
       if (err) return next(err);
 
       res.render('admin/list', {pastes: pastes, page: page, pages: pages});
-  });
+  }, {not_status: undefined});
 };
 
 exports.bulk = function (req, res, next) {

@@ -117,22 +117,31 @@ Paste.where = function (cond) {
     where.push('encrypted = ' + ((cond.encrypted) ? '1' : '0'));
   if (_.isBoolean(cond.private))
     where.push('private = ' + ((cond.private) ? '1' : '0'));
+  if (_.isNumber(cond.not_status))
+    where.push('status <> ' + cond.not_status);
+  if (_.isNumber(cond.status))
+    where.push('status = ' + cond.status);
 
   return where.join(' and ');
 };
 
-Paste.page = function (page, per_page, callback) {
+Paste.page = function (page, per_page, callback, _cond) {
   if (_.isFunction(per_page)) {
     callback = per_page;
     per_page = config.index.per_page;
   }
+  var cond = {encrypted: false, private: false, not_status: Paste.STATUS_SPAM};
+  if (_.isObject(_cond)) {
+    cond = _.extend(cond, _cond);
+  }
+
   logger.debug('Paste.page() per_page=%d', per_page);
   Paste.countAllPublic(function (err, all) {
     if (err != null) return next(err);
     if (per_page > all) per_page = all;
     var page_count = Math.ceil(all / per_page);
     var start = (page-1) * per_page;
-    Paste.list(start, per_page, {encrypted: false, private: false}, 
+    Paste.list(start, per_page, cond, 
       function (err, pastes) {
         callback(err, pastes, page_count);
     });
@@ -328,7 +337,7 @@ Paste.prototype.save = function (id, callback) {
 
 Paste.prototype._insert = function (callback) {
   var obj = _.pick(this, ['id', 'secret', 'username', 'summary', 'content',
-      'expire', 'created', 'encrypted', 'language', 'private']);
+      'expire', 'created', 'encrypted', 'language', 'private', 'status']);
   logger.trace('paste insert: ' + util.inspect(obj));
   store.insert('paste', obj, callback);
 };
@@ -339,7 +348,7 @@ Paste.prototype._insert = function (callback) {
  * Only allows to edit summary, content and language.
  */
 Paste.prototype._update = function (callback) {
-  store.update('paste', _.pick(this, ['summary', 'content', 'language']), 
+  store.update('paste', _.pick(this, ['summary', 'content', 'language', 'status']), 
     {id: this.id, secret: this.secret}, callback);
 };
 

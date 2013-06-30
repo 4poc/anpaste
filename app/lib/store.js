@@ -138,7 +138,7 @@ exports.disconnect = disconnect;
 
 var query = function (query, values, callback) {
   callback = (typeof values == 'function') ? values : callback;
-  //console.log('execute query: ' + query + ', ' + util.inspect(values));
+  logger.trace('execute query: ' + query + ', ' + util.inspect(values));
   db.all(query, values, function (err, res) {
     if (err) return callback("SQL: " + query + "\n" + err);
     callback(null, res);
@@ -148,7 +148,7 @@ exports.query = query;
 
 var run = function (query, values, callback) {
   callback = (typeof values == 'function') ? values : callback;
-  // console.log('run query: ' + query + ', ' + util.inspect(values));
+  logger.trace('execute query: ' + query + ', ' + util.inspect(values));
   db.run(query, values, callback);
 };
 exports.run = run;
