@@ -65,14 +65,12 @@ exports.createPaste = function (req, res, next) {
   var paste = new Paste(req.body);
 
   // remember the paste settings in the session
-  if (req.body.expire != '0') {
-    req.session.option_expire = req.body.expire;
-  }
   _.extend(req.session, {
     option_language: paste.language,
     option_private: paste.private,
     option_wordids: paste.wordids,
-    option_announce: req.body.announce
+    option_announce: req.body.announce,
+    option_expire: req.body.expire
   });
 
   paste.save(function (err) {
