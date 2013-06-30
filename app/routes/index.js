@@ -65,6 +65,11 @@ exports.createPasteForm = function (req, res) {
 exports.createPaste = function (req, res, next) {
   var paste = new Paste(req.body);
 
+  if (req.body.kcehmaps != '') {
+    logger.info('spam detected via hidden formfield!');
+    paste.status = Paste.STATUS_SPAM;
+  }
+
   // remember the paste settings in the session
   _.extend(req.session, {
     option_language: paste.language,
