@@ -38,14 +38,14 @@ html
     script(type='text/javascript', src='/js/client.js')
 
     if !session.show_line_numbers
-      style(type='text/css')
+      style(type='text/css').
         body .syntaxhighlighter .line {
           white-space: pre-wrap !important; /* make code wrap */
         }
     
   body
 
-    script(type='text/javascript')
+    script(type='text/javascript').
       var session_test = #{session.test || false};
       SyntaxHighlighter.defaults.toolbar = false;
       SyntaxHighlighter.defaults.gutter = #{session.show_line_numbers};
