@@ -82,6 +82,9 @@ form label {
   display: block;
   margin-top: 4px;
 }
+form input[name="kcehmaps"] {
+  display: none;
+}
 form input[type="submit"] {
   padding: 3px 8px;
 }
