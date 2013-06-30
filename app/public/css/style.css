@@ -111,6 +111,17 @@ form textarea {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
 }
+form#login input[type="password"] {
+  width: 200px;
+  font-family: monaco, monospace;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 3px;
+  border: 1px solid #e7e7e7;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
 .options {
   display: block;
   padding-left: 1px;
@@ -231,4 +242,15 @@ footer .time {
   display: inline-block;
   white-space: pre;
   font-family: monaco, monospace;
+}
+table {
+  width: 100%;
+  font-family: arial, sans-serif;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+table td,
+table th {
+  border: 1px solid #999;
+  padding: 8px;
 }

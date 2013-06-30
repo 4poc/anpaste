@@ -3,6 +3,10 @@
   "description": "a simple nodejs pastebin webapp powered by express 3 and sqlite3",
   "author": "apoc <apoc@sixserv.org>",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/4poc/anpaste.git"
+  },
   "dependencies": {
     "express": "3.1.x",
     "less-middleware": "0.1.x",
@@ -13,7 +17,8 @@
     "validator": "0.4.x",
     "strftime": "0.5.x",
     "underscore": "1.4.x",
-    "winston": "0.7.x"
+    "winston": "0.7.x",
+    "akismet": "0.0.x"
   },
   "devDependencies": {
     "mocha": "1.9.x"

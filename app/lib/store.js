@@ -38,7 +38,8 @@ db.serialize(function () {
 
              '    encrypted    INTEGER,' +
              '    language     TEXT,' +
-             '    private      INTEGER' +
+             '    private      INTEGER,' +
+             '    status       INTEGER DEFAULT 0' +
              ');');
 
       console.log('[init] create table: session');
@@ -65,6 +66,45 @@ db.serialize(function () {
   });
 
 });
+
+// migrations
+var pragma_version = function (version, callback) {
+  var next = function (err, row) {
+    if (err) return callback(err);
+    var version = (row != null && row.user_version) ? row.user_version : 0;
+    callback(null, version);
+  };
+  if (_.isFunction(version)) {
+    callback = version;
+    logger.trace('query user_version');
+    db.get('pragma user_version', next);
+  }
+  else {
+    logger.trace('set user_version %d', version);
+    db.get('pragma user_version=' + version, function (err) {
+      if (err) return callback(err);
+      callback(null, version);
+    });
+  }
+};
+var migration = function (err, version) {
+  if (err) {
+    console.log('error checking version: ' + err);
+    process.exit();
+  }
+  logger.debug('migration version check: %d', version);
+
+  /**
+   * 0 -> 1
+   * * added status field to paste
+   */
+  if (version == 0) {
+    db.run('alter table paste add column status INTEGER DEFAULT 0');
+    pragma_version(1, migration);
+  }
+
+};
+pragma_version(migration);
 
 // open/create sqlite3 database
 var connect = function (callback) {

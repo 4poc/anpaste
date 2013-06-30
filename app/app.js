@@ -11,6 +11,7 @@ var util = require('util');
 // Internal modules
 var routes = require('./routes');
 var api = require('./routes/api');
+var admin = require('./routes/admin');
 var middlewares = require('./middlewares.js');
 var store = require('./lib/store.js');
 var tcpsrv = require('./lib/tcpsrv.js');
@@ -110,6 +111,14 @@ app.post('/api/1/paste'        , api.createPaste);
 app.put ('/api/1/paste/:id'    , api.updatePaste);
 app.delete('/api/1/paste/:id'  , api.deletePaste);
 
+// admin panel
+app.get ('/admin'              , admin.loginForm);
+app.post('/admin/login'        , admin.login);
+app.post('/admin/logout'       , admin.logout);
+app.get ('/admin/list'         , admin.authTest, admin.list);
+app.post('/admin/bulk'         , admin.authTest, admin.bulk);
+
+// show pates & catch-all route:
 app.get ('/:id.:format?/:file?', routes.readPaste);
 app.all ('*'                   , routes.notFound);
 

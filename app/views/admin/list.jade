@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  h1 paste list
+
+  form(method='POST', action='/admin/bulk')
+    table
+      tr
+        th
+          input(type='checkbox', name='selection_all', value='')
+          | #
+        th content
+        th created
+        th status
+        th action
+      each paste in pastes
+        tr
+          td 
+            input(type='checkbox', name='selection', value='#{paste.id}')
+            a(href='/#{paste.id}') #{paste.id}
+          td #{paste.getShortExcerpt()}
+          td #{strftime(config.ftime, paste.created)}
+          td #{paste.getStatusString()}
+          td approve
+    h2 bulk action:
+    input(type='submit', name='bulk_delete', value='delete selected')
+
+  .pager
+    if page > 1
+      a.previous(href='/admin/list?page=#{page-1}') &laquo; previous page
+
+    - for (var i = 1; i < pages; ++i) {
+      a.page(href='/admin/list?page=#{i}') #{i}
+    - }
+
+    if page < pages
+      a.next(href='/admin/list?page=#{page+1}') next page &raquo;
+

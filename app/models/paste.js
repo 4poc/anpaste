@@ -27,6 +27,7 @@ _.each(brush, function (b) {
 function Paste(obj) {
   obj = obj || {};
   this.id = obj.id || null;
+  this.status = obj.status || Paste.STATUS_UNCHECKED;
 
   if (_.isNull(this.id))
     this.secret = token.generate(16);
@@ -74,6 +75,10 @@ function Paste(obj) {
 }
 exports.Paste = Paste;
 
+Paste.STATUS_UNCHECKED = 0;
+Paste.STATUS_APPROVED = 1;
+Paste.STATUS_SPAM = 2;
+
 Paste.getById = function (id, callback) {
   var sql = 'select * from paste where id = ? and ' + Paste.where();
   store.query(sql, [id], function (err, res) {
@@ -116,12 +121,18 @@ Paste.where = function (cond) {
   return where.join(' and ');
 };
 
-Paste.page = function (page, callback) {
+Paste.page = function (page, per_page, callback) {
+  if (_.isFunction(per_page)) {
+    callback = per_page;
+    per_page = config.index.per_page;
+  }
+  logger.debug('Paste.page() per_page=%d', per_page);
   Paste.countAllPublic(function (err, all) {
     if (err != null) return next(err);
-    var page_count = Math.ceil(all / config.index.per_page);
-    var start = (page-1) * config.index.per_page;
-    Paste.list(start, config.index.per_page, {encrypted: false, private: false}, 
+    if (per_page > all) per_page = all;
+    var page_count = Math.ceil(all / per_page);
+    var start = (page-1) * per_page;
+    Paste.list(start, per_page, {encrypted: false, private: false}, 
       function (err, pastes) {
         callback(err, pastes, page_count);
     });
@@ -147,6 +158,13 @@ Paste.countAllPublic = function (callback) {
       if (err != null) return callback(err, false);
       callback(null, count);
   });
+};
+
+Paste.deleteByIds = function (ids, callback) {
+  var where = _.map(ids, function (id) { return 'id = ?'; });
+  var sql = 'delete from paste where ' + where.join(' or ');
+  logger.trace('bulk delete query: ' + sql);
+  store.query(sql, ids, callback);
 };
 
 Paste._claimedIds = [];
@@ -366,6 +384,15 @@ Paste.prototype.getExcerpt = function () {
   return content.join('\n') + post;
 };
 
+Paste.prototype.getShortExcerpt = function () {
+  var content = this.getContent();
+
+  if (content.length > 80)
+    content = content.substr(0, 80) + '...';
+
+  return content;
+};
+
 Paste.prototype.announce = function () {
   var url = config.server.url + '/' + this.id;
   var message = 'new paste submitted :: ' + url;
@@ -377,6 +404,15 @@ Paste.prototype.announce = function () {
 
 Paste.prototype.getUrl = function () {
   return config.server.url + '/' + this.id;
+};
+
+Paste.prototype.getStatusString = function () {
+  switch (this.status) {
+  case Paste.STATUS_UNCHECKED: return 'unchecked';
+  case Paste.STATUS_APPROVED: return 'approved';
+  case Paste.STATUS_SPAM: return 'spam';
+  }
+  return '?';
 };
 
 

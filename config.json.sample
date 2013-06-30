@@ -1,6 +1,7 @@
 {
   "debug": true,
   "ftime": "%d %B %Y %H:%M:%S",
+  "admin_pw": "changeme",
   "database": "anpaste.sqlite",
   "server": {
     "domain": "paste.geekosphere.org",
