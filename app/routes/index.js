@@ -33,6 +33,7 @@ exports.readPaste = function (req, res, next) {
   var id = req.params.id, format = req.params.format || 'html';
   Paste.getById(id, function (err, paste) {
     if (err) return next(err);
+    if (paste.status == Paste.STATUS_SPAM) return next(new Error('cant show spam'));
     if (req.params.file) {
       format = 'raw';
       res.set('Content-Disposition', 'attachment; filename='+req.params.file);
@@ -116,6 +117,7 @@ exports.updatePasteForm = function (req, res, next) {
   var id = req.params.id, secret = req.params.secret;
   Paste.getById(id, function (err, paste) {
     if (err != null) return next(err);
+    if (paste.status == Paste.STATUS_SPAM) return next(new Error('cant update spam'));
     if (secret !== paste.secret) return next(new Error('wrong secret'));
     res.render('update', {paste: paste});
   });

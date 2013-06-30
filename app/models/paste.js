@@ -348,6 +348,7 @@ Paste.prototype._insert = function (callback) {
  * Only allows to edit summary, content and language.
  */
 Paste.prototype._update = function (callback) {
+  if (this.status == Paste.STATUS_SPAM) return callback('cant update spam!');
   store.update('paste', _.pick(this, ['summary', 'content', 'language', 'status']), 
     {id: this.id, secret: this.secret}, callback);
 };
