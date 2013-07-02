@@ -14,17 +14,17 @@ var config = require('../../config.json');
 var db = new sqlite3.Database(config.database);
 
 // initialize database:
-db.serialize(function () {
-  // check if the tables are there, if not initialize
-  var sql = "select name from sqlite_master where type='table' and name='paste'";
-  db.get(sql, function (err, row) {
-    if (err) {
-      console.log('error checking present table paste: ' + err);
-      process.exit();
-    }
+// check if the tables are there, if not initialize
+var sql = "select name from sqlite_master where type='table' and name='paste'";
+db.get(sql, function (err, row) {
+  if (err) {
+    console.log('error checking present table paste: ' + err);
+    process.exit();
+  }
 
-    if (!row) {
-      console.log('[init] create table: paste');
+  if (!row) {
+    db.serialize(function () {
+      logger.info('[init] create table: paste');
       db.run('CREATE TABLE paste (' +
              '    id           TEXT PRIMARY KEY,' +
              '    secret       TEXT,' +
@@ -42,14 +42,14 @@ db.serialize(function () {
              '    status       INTEGER DEFAULT 0' +
              ');');
 
-      console.log('[init] create table: session');
+      logger.info('[init] create table: session');
       db.run('CREATE TABLE session (' +
              '    id           TEXT PRIMARY KEY,' +
              '    expired      TEXT,' +
              '    data         TEXT' +
              ');');
 
-      console.log('[init] create table: user');
+      logger.info('[init] create table: user');
       db.run('CREATE TABLE user (' +
              '    username            TEXT PRIMARY KEY,' +
              '    password            TEXT,' +
@@ -62,9 +62,10 @@ db.serialize(function () {
              '    default_announce    INTEGER,' +
              '    default_markdown    INTEGER' +
              ');');
-    }
-  });
 
+      db.run('PRAGMA user_version=1;');
+    });
+  }
 });
 
 // migrations
@@ -99,7 +100,7 @@ var migration = function (err, version) {
    * * added status field to paste
    */
   if (version == 0) {
-    db.run('alter table paste add column status INTEGER DEFAULT 0');
+    db.run('alter table paste add column status INTEGER DEFAULT 0', function () {});
     pragma_version(1, migration);
   }
 

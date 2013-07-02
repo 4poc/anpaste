@@ -78,6 +78,7 @@ $(function () {
     var data = {
       summary: summary,
       content: content,
+      kcehmaps: '',
       expire: $('select[name="expire"]').val(),
       private: private,
       language: language,
