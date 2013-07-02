@@ -316,8 +316,14 @@ table.admin_list tr.spam td.status {
 table.admin_list tr.approved td.status {
   color: #468847;
 }
-table.admin_list .created {
-  max-width: 140px;
+table.admin_list .content {
+  width: 100%;
+}
+table.admin_list .id,
+table.admin_list .created,
+table.admin_list .status,
+table.admin_list .action {
+  white-space: nowrap;
 }
 .pagination {
   display: block;
