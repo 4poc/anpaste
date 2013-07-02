@@ -40,7 +40,7 @@ exports.authTest = function (req, res, next) {
 
 exports.list = function (req, res, next) {
   var page = parseInt(req.query.page, 10) || 1;
-  Paste.page(page, 25, function (err, pastes, pages) {
+  Paste.page(page, 250, function (err, pastes, pages) {
       if (err) return next(err);
 
       res.render('admin/list', {pastes: pastes, page: page, pages: pages});

@@ -106,7 +106,7 @@ form input[type="checkbox"] {
 }
 form textarea {
   width: 99%;
-  font-family: monaco;
+  font-family: monaco, monospace;
   font-size: 11px;
   padding: 3px;
   height: 350px;
