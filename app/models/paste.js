@@ -135,11 +135,11 @@ Paste.page = function (page, per_page, callback, _cond) {
     cond = _.extend(cond, _cond);
   }
 
-  logger.debug('Paste.page() per_page=%d', per_page);
-  Paste.countAllPublic(function (err, all) {
+  Paste.countAllPublic(cond, function (err, all) {
     if (err != null) return next(err);
     if (per_page > all) per_page = all;
     var page_count = Math.ceil(all / per_page);
+    logger.debug('Paste.page() per_page=%d all=%d page_count=%d', per_page, all, page_count);
     var start = (page-1) * per_page;
     Paste.list(start, per_page, cond, 
       function (err, pastes) {
@@ -162,8 +162,12 @@ Paste.countAll = function (callback) {
   });
 };
 
-Paste.countAllPublic = function (callback) {
-  store.count('paste', Paste.where({encrypted: false, private: false}), function (err, count) {
+Paste.countAllPublic = function (cond, callback) {
+  if (_.isFunction(cond)) {
+    callback = cond;
+    cond = {encrypted: false, private: false};
+  }
+  store.count('paste', Paste.where(cond), function (err, count) {
       if (err != null) return callback(err, false);
       callback(null, count);
   });
@@ -175,6 +179,15 @@ Paste.deleteByIds = function (ids, callback) {
   logger.trace('bulk delete query: ' + sql);
   store.query(sql, ids, callback);
 };
+
+Paste.markByIds = function (ids, status, callback) {
+  var where = _.map(ids, function (id) { return 'id = ?'; });
+  ids.unshift(status);
+  var sql = 'update paste set status = ? where ' + where.join(' or ');
+  logger.trace('bulk mark query: ' + sql);
+  store.query(sql, ids, callback);
+};
+
 
 Paste._claimedIds = [];
 
@@ -424,6 +437,13 @@ Paste.prototype.getStatusString = function () {
   return '?';
 };
 
+Paste.prototype.isSpam = function () {
+  return (this.status == Paste.STATUS_SPAM);
+};
+
+Paste.prototype.isUnchecked = function () {
+  return (this.status == Paste.STATUS_UNCHECKED);
+};
 
 
 

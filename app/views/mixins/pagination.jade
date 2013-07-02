@@ -1,0 +1,28 @@
+mixin list_pager(page, pages, url)
+  .pagination
+    ul
+      li
+        if page > 1
+          a.previous(href='#{url}?page=#{page-1}') &laquo;
+        else
+          span &laquo;
+
+      - for (var i = 1; i <= pages; ++i) {
+        if i == 4
+          li
+            span &hellip;
+        else if i < 4 || i > pages - 3
+          if page == i
+            li.current
+              span #{i}
+          else
+            li
+              a.page(href='#{url}?page=#{i}') #{i}
+      - }
+
+      li
+        if page < pages
+          a.next(href='#{url}?page=#{page+1}') &raquo;
+        else
+          span &raquo;
+

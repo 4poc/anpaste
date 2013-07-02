@@ -40,20 +40,24 @@ exports.authTest = function (req, res, next) {
 
 exports.list = function (req, res, next) {
   var page = parseInt(req.query.page, 10) || 1;
-  Paste.page(page, 250, function (err, pastes, pages) {
+  Paste.page(page, 25, function (err, pastes, pages) {
       if (err) return next(err);
 
       res.render('admin/list', {pastes: pastes, page: page, pages: pages});
-  }, {not_status: undefined});
+  }, {not_status: undefined, status: req.session.list_filter});
 };
 
 exports.bulk = function (req, res, next) {
-  var selection = req.body.selection;
+  var selection = req.body.selection, action;
   if (!_.isArray(selection)) {
     selection = [selection];
   }
+  if (req.body.action_submit)
+    action = req.body.action;
+  else
+    action = req.body.action2;
 
-  if (req.body.bulk_delete) {
+  if (action == 'delete') {
     Paste.deleteByIds(selection, function (err) {
       if (err) {
         return next('error deleting: ' + err);
@@ -61,8 +65,57 @@ exports.bulk = function (req, res, next) {
       res.redirect('/admin/list');
     });
   }
+  else if (action == 'approve' || action == 'spam') {
+    var status = (action == 'approve') ? Paste.STATUS_APPROVED : Paste.STATUS_SPAM;
+    Paste.markByIds(selection, status, function (err) {
+      if (err) {
+        return next('error marking: ' + err);
+      }
+      res.redirect('/admin/list');
+    });
+  }
   else {
     res.redirect('/admin/list');
   }
+};
+
+exports.parseStatus = function (req, res, next) {
+  var status = req.params.status;
+  switch (req.params.status) {
+  case 'all':
+    req.paste_status = null;
+    break;
+  case 'unchecked':
+    req.paste_status = Paste.STATUS_UNCHECKED;
+    break;
+  case 'approved':
+    req.paste_status = Paste.STATUS_APPROVED;
+    break;
+  case 'spam':
+    req.paste_status = Paste.STATUS_SPAM;
+    break;
+  }
+  next();
+};
+
+exports.listFilter = function (req, res, next) {
+  req.session.list_filter = req.paste_status;
+  res.redirect('/admin/list');
+};
+
+exports.markPaste = function (req, res, next) {
+  Paste.getById(req.params.id, function (err, paste) {
+    if (err) {
+      return next(new Error('unable to mark paste ' + err));
+    }
+
+    paste.status = req.paste_status;
+    paste.save(function (err) {
+      if (err) {
+        return next(new Error('unable to mark paste ' + err));
+      }
+      res.redirect('/admin/list');
+    });
+  });
 };
 

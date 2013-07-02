@@ -6,5 +6,10 @@ $(function () {
       $(selection).prop('checked', $(self).is(':checked'));
     });
   });
+  $('.admin_list > tbody > tr').click(function (event) {
+    if (event.target.type !== 'checkbox') {
+      $(':checkbox', this).trigger('click');
+    }
+  });
 });
 

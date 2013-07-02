@@ -118,6 +118,8 @@ app.post('/admin/login'        , admin.login);
 app.post('/admin/logout'       , admin.logout);
 app.get ('/admin/list'         , admin.authTest, admin.list);
 app.post('/admin/bulk'         , admin.authTest, admin.bulk);
+app.get('/admin/filter/:status', admin.authTest, admin.parseStatus, admin.listFilter);
+app.get('/admin/mark/:id/:status', admin.authTest, admin.parseStatus, admin.markPaste);
 
 // show pates & catch-all route:
 app.get ('/:id.:format?/:file?', routes.readPaste);

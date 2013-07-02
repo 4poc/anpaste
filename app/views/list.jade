@@ -1,5 +1,7 @@
 extends layout
 
+include mixins/pagination.jade
+
 block content
   h1
     a(href='/') #{domain}
@@ -25,9 +27,5 @@ block content
               | ##{paste.id}
         pre#content(class='brush: #{paste.language}') #{paste.getExcerpt()}
 
-  .pager
-    if page > 1
-      a.previous(href='/list?page=#{page-1}') &laquo; previous page
-    if page < pages
-      a.next(href='/list?page=#{page+1}') next page &raquo;
+  mixin list_pager(page, pages, '/list')
 

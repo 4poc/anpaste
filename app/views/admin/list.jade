@@ -1,39 +1,77 @@
 extends layout
 
+include ../mixins/pagination.jade
+
+mixin bulk_action(name)
+  div.bulk_action
+    select(name=name)
+      option bulk action
+      option(value='approve') approve
+      option(value='spam') mark as spam
+      option(value='delete') remove
+    input(type='submit', name='#{name}_submit', value='apply')
+
 block content
-  h1 paste list
+  h1 paste administration
+
+  ul.pipe_list.status_filter
+    li.first(class=(!session.list_filter) ? 'current' : '')
+      a(href='/admin/filter/all') All
+    li(class=(session.list_filter==1) ? 'current' : '')
+      a(href='/admin/filter/approved') Approved
+      // | (131)
+    li(class=(session.list_filter==2) ? 'current' : '')
+      a(href='/admin/filter/spam') Spam
+      // | (3414)
+
 
   form(method='POST', action='/admin/bulk')
-    table
-      tr
-        th
-          input(type='checkbox', name='selection_all', value='')
-          | #
-        th content
-        th created
-        th status
-        th action
-      each paste in pastes
+
+    mixin bulk_action('action')
+
+    table.admin_list
+      thead
         tr
-          td 
-            input(type='checkbox', name='selection', value='#{paste.id}')
-            a(href='/#{paste.id}') #{paste.id}
-          td #{paste.getShortExcerpt()}
-          td #{strftime(config.ftime, paste.created)}
-          td #{paste.getStatusString()}
-          td approve
-    h2 bulk action:
-    input(type='submit', name='bulk_delete', value='delete selected')
-    input(type='submit', name='bulk_mark_spam', value='mark selected as spam')
+          th
+            input(type='checkbox', name='selection_all', value='')
+          th content
+          th created
+          th status
+          th action
+      tbody
+        each paste in pastes
+          tr(class=paste.isSpam() ? 'spam' : 'approved')
+            td.id 
+              input(type='checkbox', name='selection', value='#{paste.id}')
+              a(href='/#{paste.id}') #{paste.id}
+            td.content #{paste.getShortExcerpt()}
+            td.created #{strftime(config.ftime, paste.created)}
+            td.status #{paste.getStatusString()}
+            td.action
+              ul.pipe_list
+                if paste.isUnchecked()
+                  li.first
+                    a(href='/admin/mark/#{paste.id}/approved') approve
+                  li
+                    a(href='/admin/mark/#{paste.id}/spam') spam
+                else if paste.isSpam()
+                  li.first
+                    a(href='/admin/mark/#{paste.id}/approved') approve
+                else if !paste.isSpam()
+                  li.first
+                    a(href='/admin/mark/#{paste.id}/spam') spam
 
-  .pager
-    if page > 1
-      a.previous(href='/admin/list?page=#{page-1}') &laquo; previous page
 
-    - for (var i = 1; i < pages; ++i) {
-      a.page(href='/admin/list?page=#{i}') #{i}
-    - }
+      tfoot
+        tr
+          th
+            input(type='checkbox', name='selection_all', value='')
+          th content
+          th created
+          th status
+          th action
 
-    if page < pages
-      a.next(href='/admin/list?page=#{page+1}') next page &raquo;
+    mixin bulk_action('action2')
+
+  mixin list_pager(page, pages, '/admin/list')
 
