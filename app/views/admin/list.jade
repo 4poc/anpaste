@@ -19,10 +19,10 @@ block content
       a(href='/admin/filter/all') All
     li(class=(session.list_filter==1) ? 'current' : '')
       a(href='/admin/filter/approved') Approved
-      // | (131)
+      | (#{counting.approved})
     li(class=(session.list_filter==2) ? 'current' : '')
       a(href='/admin/filter/spam') Spam
-      // | (3414)
+      | (#{counting.spam})
 
 
   form(method='POST', action='/admin/bulk')

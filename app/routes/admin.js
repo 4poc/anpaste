@@ -40,11 +40,22 @@ exports.authTest = function (req, res, next) {
 
 exports.list = function (req, res, next) {
   var page = parseInt(req.query.page, 10) || 1;
-  Paste.page(page, 250, function (err, pastes, pages) {
-      if (err) return next(err);
+  var counting = {all: 0, approved: 0, spam: 0};
+  Paste.countAllPublic(function (err, count) {
+    counting.all = count;
+    Paste.countAllPublic({encrypted: false, private: false, status: Paste.STATUS_SPAM}, function (err, count) {
+      counting.spam = count;
+      Paste.countAllPublic({encrypted: false, private: false, status: Paste.STATUS_APPROVED}, function (err, count) {
+        counting.approved = count;
 
-      res.render('admin/list', {pastes: pastes, page: page, pages: pages});
-  }, {not_status: undefined, status: req.session.list_filter});
+        Paste.page(page, 250, function (err, pastes, pages) {
+            if (err) return next(err);
+
+            res.render('admin/list', {pastes: pastes, page: page, pages: pages, counting: counting});
+        }, {not_status: undefined, status: req.session.list_filter});
+      });
+    });
+  });
 };
 
 exports.bulk = function (req, res, next) {
