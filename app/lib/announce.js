@@ -1,7 +1,7 @@
 
 var logger = require('./log.js');
 var dgram = require('dgram');
-var config = require('../../config.json');
+var config = require('./config.js');
 
 exports.announce = function (text) {
   var message = new Buffer([config.announce.password, config.announce.channel, text].join('|'));

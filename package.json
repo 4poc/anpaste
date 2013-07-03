@@ -18,10 +18,12 @@
     "strftime": "0.5.x",
     "underscore": "1.4.x",
     "winston": "0.7.x",
-    "request": "2.x"
+    "request": "2.x",
+    "yaml": "0.2.x"
   },
   "devDependencies": {
-    "mocha": "1.9.x"
+    "mocha": "1.9.x",
+    "should": "1.2.x"
   },
   "engines": { "node": ">= 0.10.x" }
 }

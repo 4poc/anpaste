@@ -1,0 +1,120 @@
+---
+# Copy and edit this sample configuration to config.yaml.
+server:
+  domain: localhost
+  url: http://localhost:31232
+  bind: 0.0.0.0
+  port: 31232
+
+# the sqlite database file
+database: anpaste.sqlite
+
+# the strftime() format string used to format timestamps
+timestamp: '%d %B %Y %H:%M:%S'
+
+# admin panel password, this will change later with user management
+admin_pw: changeme
+
+# the IRC announcements is sortof a undocumented feature right now
+announce:
+  channel: null
+  udp_proto: udp4
+  host: 127.0.0.1
+  port: 7272
+  password: pw
+
+session:
+  secret: changeme
+  maxAge: 86400000000
+  # defaults for various webui settings that are remembered in the session
+  defaults:
+    show_line_numbers: false # display the line numbers by default
+    show_theme: Default # default syntax highlighter theme to use
+    option_tabkeys: false # insert tabs in textarea
+    option_language: plain # paste language to use by default
+    option_expire: 0
+    option_private: false
+    option_wordids: false # xkcd word ids
+    option_announce: false
+
+# settings for the public pastes list
+index:
+  max_lines: 40 # display how many lines per paste
+  per_page: 2 # pastes per page
+
+# REST API settings
+api:
+  max: 10 # max number of pastes to list 
+
+themes:
+  ['Default', 'Midnight', 'Django', 'Eclipse', 'Emacs', 'FadeToGrey', 'MDUltra', 'RDark', 'Zenburn']
+
+expire:
+  'never': 0
+  'half an hour': 1800
+  'one day': 86400
+  'a week': 604800
+  'one month': 2678400
+
+# settings for the post-via-TCP socket feature
+tcpsrv:
+  port: 55555
+  bind:
+    ['0.0.0.0', '::1']
+
+# setup akismet for spam detection, is not used if apiKey is null
+akismet:
+  blog: 'http://example.com'
+  apiKey: null
+  proxy: null
+
+logger:
+  console:
+    silent: true
+    level: info
+    colorize: true
+    timestamp: true
+  file:
+    silent: true
+    level: info
+    timestamp: true
+    filename: anpaste.log
+    maxsize: 5368709120
+    json: false
+
+#
+# development, test and production are merged with all above
+#
+
+development:
+  database: anpaste_dev.sqlite
+  logger:
+    console:
+      level: trace
+      silent: false
+      colorize: true
+      timestamp: false
+    file:
+      silent: true
+
+test:
+  database: anpaste_test.sqlite
+  logger:
+    console:
+      silent: true
+    file:
+      level: trace
+      silent: false
+      timestamp: true
+      filename: anpaste_test.log
+
+production:
+  logger:
+    console:
+      silent: true
+    file:
+      level: info
+      silent: false
+      timestamp: true
+      filename: anpaste.log
+

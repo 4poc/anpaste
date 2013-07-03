@@ -1,7 +1,7 @@
 var util = require('util');
 var sprintf = require('sprintf').sprintf;
 var logger = require('./log.js');
-var config = require('../../config.json');
+var config = require('./config.js');
 var request = require('request').defaults({proxy: config.akismet.proxy});
 var Paste = require('../models/paste.js').Paste;
 

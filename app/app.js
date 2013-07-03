@@ -26,7 +26,7 @@ var app = express();
 
 // Configuration
 var public_path = path.join(__dirname, './public');
-var config = require('../config.json');
+var config = require('./lib/config.js');
 var brush = require('../brush.json');
 var logger = require('./lib/log.js');
 

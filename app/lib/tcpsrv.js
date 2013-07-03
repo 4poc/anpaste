@@ -3,7 +3,7 @@ var util = require('util');
 var _ = require('underscore');
 var logger = require('./log.js');
 
-var config = require('../../config.json');
+var config = require('./config.js');
 
 var Paste = require('../models/paste.js').Paste;
 
@@ -21,7 +21,10 @@ exports.create = function () {
         return;
       }
 
-      conn.write(config.tcpsrv.reply + id + '\r\n');
+      var reply = 'This socket is now listening for your paste to be posted.\r\n' +
+        'Once you close this connection it is made available at ' + config.server.url;
+
+      conn.write(reply + id + '\r\n');
       conn.resume();
 
       var paste = new Paste({stream: conn, private: true});

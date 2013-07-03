@@ -1,7 +1,7 @@
 
 node_modules
-config.json
+config.yaml
 Guardfile
-anpaste.sqlite
-anpaste.log
+*.sqlite
+*.log
 

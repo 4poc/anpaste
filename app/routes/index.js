@@ -4,7 +4,7 @@ var _ = require('underscore');
 var logger = require('../lib/log.js');
 var akismet = require('../lib/akismet.js');
 
-var config = require('../../config.json');
+var config = require('../lib/config.js');
 
 var Paste = require('../models/paste.js').Paste;
 

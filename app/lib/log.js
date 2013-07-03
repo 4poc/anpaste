@@ -1,6 +1,6 @@
 var util = require('util');
 var _ = require('underscore');
-var config = require('../../config.json');
+var config = require('./config.js');
 
 // Configure logging
 var winston = require('winston');

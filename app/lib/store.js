@@ -6,7 +6,7 @@ var logger = require('./log.js');
 
 var util = require('util');
 
-var config = require('../../config.json');
+var config = require('./config.js');
 
 // very simple persistence layer with some very strange query building
 
